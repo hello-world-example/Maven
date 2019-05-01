@@ -1,6 +1,6 @@
 * [Nexus私服](nexus.md) 
 * [SNAPSHOT](SNAPSHOT.md)
-* [手写 Maven 查询](custom-plugin-by-hand.md)
+* [手写 Maven 插件](custom-plugin-by-hand.md)
 * 官方插件
     * [maven-help-plugin](plugins/maven-help-plugin.md)
     * [maven-dependency-plugin](plugins/maven-dependency-plugin.md)
