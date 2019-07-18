@@ -11,3 +11,6 @@
     * [maven-assembly-plugin](plugins/maven-assembly-plugin.md)
 * 第三方插件
     * [versions-maven-plugin](plugins/versions-maven-plugin.md)
+* In Action
+    * [可运行 jar](in-action/runnable-jar.md)
+
