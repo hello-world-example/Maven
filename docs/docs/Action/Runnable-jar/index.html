@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Runnable Jar"><meta property="og:title" content="" />
+<meta property="og:description" content="可运行 jar 方式一 目录结构
+ target  MainApp.jar config/ lib/    所用插件
+&lt;plugins&gt; &lt;plugin&gt; &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt; &lt;artifactId&gt;maven-jar-plugin&lt;/artifactId&gt; &lt;version&gt;3.1.2&lt;/version&gt; &lt;configuration&gt; &lt;archive&gt; &lt;manifest&gt; &lt;addClasspath&gt;true&lt;/addClasspath&gt; &lt;mainClass&gt;xxx.MainApp&lt;/mainClass&gt; &lt;classpathPrefix&gt;lib/&lt;/classpathPrefix&gt; &lt;!-- SNAPSHOT 版本 Class-Path 是 XXX-x.y.z-SNAPSHOT.jar --&gt; &lt;!-- 而不是 XXX-x.y.z-20190517.110547-4.jar --&gt; &lt;!-- 避免 Class-Path 与实际文件名不一致，找不到类 --&gt; &lt;useUniqueVersions&gt;false&lt;/useUniqueVersions&gt; &lt;/manifest&gt; &lt;!-- META-INF 文档属性 --&gt; &lt;manifestEntries&gt; &lt;Rose&gt;*&lt;/Rose&gt; &lt;!-- 将 config目录也加入到 classPath 下 --&gt; &lt;Class-Path&gt;config/&lt;/Class-Path&gt; &lt;/manifestEntries&gt; &lt;/archive&gt; &lt;excludes&gt; &lt;!-- 不打到 jar 包里面的文件 --&gt; &lt;exclude&gt;config.properties&lt;/exclude&gt; &lt;/excludes&gt; &lt;/configuration&gt; &lt;/plugin&gt; &lt;plugin&gt; &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt; &lt;artifactId&gt;maven-resources-plugin&lt;/artifactId&gt; &lt;version&gt;3." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hello-world-example.github.io/Maven/docs/Action/Runnable-jar/" />
+<meta property="article:modified_time" content="2020-03-14T18:20:20+08:00" />
+<title>Runnable Jar | Maven</title>
+<link rel="icon" href="/Maven/favicon.png" type="image/x-icon">
+
+
+<link rel="stylesheet" href="/Maven/book.min.5ffea21f70a71b9e6059006c33cc74cf184e208cb9897c6b24840c9f4e0e385e.css" integrity="sha256-X/6iH3CnG55gWQBsM8x0zxhOIIy5iXxrJIQMn04OOF4=">
+
+
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body>
+  <input type="checkbox" class="hidden" id="menu-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/Maven"><span>Maven</span>
+  </a>
+</h2>
+
+
+
+
+
+
+  <ul>
+<li><a href="/Maven/docs/Nexus/">Nexus 私服</a></li>
+<li><a href="/Maven/docs/Custom-Plugin/">编写 Maven 插件</a></li>
+<li><a href="/Maven/docs/Reactor/">反应堆</a></li>
+<li><strong>FAQ</strong>
+<ul>
+<li><a href="/Maven/docs/FAQ/SNAPSHOT-U/">SNAPSHOT 更新策略</a></li>
+<li><a href="/Maven/docs/FAQ/Parent-vs-Import/">parent 和 import 的区别</a></li>
+</ul>
+</li>
+<li><strong>官方插件</strong>
+<ul>
+<li><a href="/Maven/docs/plugins/maven-help-plugin/">maven-help-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-dependency-plugin/">maven-dependency-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-shade-plugin/">maven-shade-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-assembly-plugin/">maven-assembly-plugin</a></li>
+</ul>
+</li>
+<li><strong>第三方插件</strong>
+<ul>
+<li><a href="/Maven/docs/plugins/versions-maven-plugin/">versions-maven-plugin</a></li>
+</ul>
+</li>
+<li><strong>Action</strong>
+<ul>
+<li><a href="/Maven/docs/Action/Runnable-jar/"class=active>可运行 jar</a></li>
+</ul>
+</li>
+</ul>
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/Maven/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Runnable Jar</strong>
+
+  <label for="toc-control">
+    <img src="/Maven/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+  </label>
+</div>
+
+
+  
+    <input type="checkbox" class="hidden" id="toc-control" />
+    <aside class="hidden clearfix">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#方式一">方式一</a></li>
+    <li><a href="#read-more">Read More</a></li>
+  </ul>
+</nav>
+
+
+    </aside>
+  
+ 
+      </header>
+
+      
+<article class="markdown"><h1 id="可运行-jar">可运行 jar</h1>
+<h2 id="方式一">方式一</h2>
+<p><strong>目录结构</strong></p>
+<ul>
+<li>target
+<ul>
+<li>MainApp.jar</li>
+<li>config/</li>
+<li>lib/</li>
+</ul>
+</li>
+</ul>
+<p><strong>所用插件</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;plugins&gt;</span>
+  <span style="color:#f92672">&lt;plugin&gt;</span>
+    <span style="color:#f92672">&lt;groupId&gt;</span>org.apache.maven.plugins<span style="color:#f92672">&lt;/groupId&gt;</span>
+    <span style="color:#f92672">&lt;artifactId&gt;</span>maven-jar-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+    <span style="color:#f92672">&lt;version&gt;</span>3.1.2<span style="color:#f92672">&lt;/version&gt;</span>
+    <span style="color:#f92672">&lt;configuration&gt;</span>
+      <span style="color:#f92672">&lt;archive&gt;</span>
+        <span style="color:#f92672">&lt;manifest&gt;</span>
+          <span style="color:#f92672">&lt;addClasspath&gt;</span>true<span style="color:#f92672">&lt;/addClasspath&gt;</span>
+          <span style="color:#f92672">&lt;mainClass&gt;</span>xxx.MainApp<span style="color:#f92672">&lt;/mainClass&gt;</span>
+          <span style="color:#f92672">&lt;classpathPrefix&gt;</span>lib/<span style="color:#f92672">&lt;/classpathPrefix&gt;</span>
+          <span style="color:#75715e">&lt;!-- SNAPSHOT 版本 Class-Path 是 XXX-x.y.z-SNAPSHOT.jar --&gt;</span>
+          <span style="color:#75715e">&lt;!-- 而不是 XXX-x.y.z-20190517.110547-4.jar --&gt;</span>
+          <span style="color:#75715e">&lt;!-- 避免 Class-Path 与实际文件名不一致，找不到类 --&gt;</span>
+          <span style="color:#f92672">&lt;useUniqueVersions&gt;</span>false<span style="color:#f92672">&lt;/useUniqueVersions&gt;</span>
+        <span style="color:#f92672">&lt;/manifest&gt;</span>
+        <span style="color:#75715e">&lt;!-- META-INF 文档属性 --&gt;</span>
+        <span style="color:#f92672">&lt;manifestEntries&gt;</span>
+          <span style="color:#f92672">&lt;Rose&gt;</span>*<span style="color:#f92672">&lt;/Rose&gt;</span>
+          <span style="color:#75715e">&lt;!-- 将 config目录也加入到 classPath 下 --&gt;</span>
+          <span style="color:#f92672">&lt;Class-Path&gt;</span>config/<span style="color:#f92672">&lt;/Class-Path&gt;</span>
+        <span style="color:#f92672">&lt;/manifestEntries&gt;</span>
+      <span style="color:#f92672">&lt;/archive&gt;</span>
+      <span style="color:#f92672">&lt;excludes&gt;</span>
+        <span style="color:#75715e">&lt;!-- 不打到 jar 包里面的文件 --&gt;</span>
+        <span style="color:#f92672">&lt;exclude&gt;</span>config.properties<span style="color:#f92672">&lt;/exclude&gt;</span>
+      <span style="color:#f92672">&lt;/excludes&gt;</span>
+    <span style="color:#f92672">&lt;/configuration&gt;</span>
+  <span style="color:#f92672">&lt;/plugin&gt;</span>
+
+
+  <span style="color:#f92672">&lt;plugin&gt;</span>
+    <span style="color:#f92672">&lt;groupId&gt;</span>org.apache.maven.plugins<span style="color:#f92672">&lt;/groupId&gt;</span>
+    <span style="color:#f92672">&lt;artifactId&gt;</span>maven-resources-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+    <span style="color:#f92672">&lt;version&gt;</span>3.1.0<span style="color:#f92672">&lt;/version&gt;</span>
+    <span style="color:#f92672">&lt;executions&gt;</span>
+      <span style="color:#f92672">&lt;execution&gt;</span>
+        <span style="color:#75715e">&lt;!-- 绑定到生命周期的compile阶段，即执行compile的时候就执行该插件 --&gt;</span>
+        <span style="color:#f92672">&lt;phase&gt;</span>package<span style="color:#f92672">&lt;/phase&gt;</span>
+        <span style="color:#75715e">&lt;!-- 使用插件的copy-resources目标 --&gt;</span>
+        <span style="color:#f92672">&lt;goals&gt;</span>
+          <span style="color:#f92672">&lt;goal&gt;</span>copy-resources<span style="color:#f92672">&lt;/goal&gt;</span>
+        <span style="color:#f92672">&lt;/goals&gt;</span>
+        <span style="color:#f92672">&lt;configuration&gt;</span>
+          <span style="color:#f92672">&lt;encoding&gt;</span>UTF-8<span style="color:#f92672">&lt;/encoding&gt;</span>
+          <span style="color:#75715e">&lt;!--拷贝到构建目录conf文件夹下 --&gt;</span>
+          <span style="color:#f92672">&lt;outputDirectory&gt;</span>${project.build.directory}/config<span style="color:#f92672">&lt;/outputDirectory&gt;</span>
+          <span style="color:#f92672">&lt;resources&gt;</span>
+            <span style="color:#f92672">&lt;resource&gt;</span>
+              <span style="color:#75715e">&lt;!-- 需要拷贝的文件夹 --&gt;</span>
+              <span style="color:#f92672">&lt;directory&gt;</span>src/main/resources<span style="color:#f92672">&lt;/directory&gt;</span>
+              <span style="color:#75715e">&lt;!-- 需要拷贝的文件 --&gt;</span>
+              <span style="color:#f92672">&lt;includes&gt;</span>
+                <span style="color:#75715e">&lt;!-- 注意： 【与 maven-jar-plugin 的 exclude 一致 】--&gt;</span>
+                <span style="color:#f92672">&lt;include&gt;</span>config.properties<span style="color:#f92672">&lt;/include&gt;</span>
+              <span style="color:#f92672">&lt;/includes&gt;</span>
+            <span style="color:#f92672">&lt;/resource&gt;</span>
+          <span style="color:#f92672">&lt;/resources&gt;</span>
+        <span style="color:#f92672">&lt;/configuration&gt;</span>
+      <span style="color:#f92672">&lt;/execution&gt;</span>
+    <span style="color:#f92672">&lt;/executions&gt;</span>
+  <span style="color:#f92672">&lt;/plugin&gt;</span>
+
+  <span style="color:#75715e">&lt;!-- 拷贝依赖的jar包到lib目录 --&gt;</span>
+  <span style="color:#f92672">&lt;plugin&gt;</span>
+    <span style="color:#f92672">&lt;groupId&gt;</span>org.apache.maven.plugins<span style="color:#f92672">&lt;/groupId&gt;</span>
+    <span style="color:#f92672">&lt;artifactId&gt;</span>maven-dependency-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+    <span style="color:#f92672">&lt;version&gt;</span>3.1.1<span style="color:#f92672">&lt;/version&gt;</span>
+    <span style="color:#f92672">&lt;executions&gt;</span>
+      <span style="color:#f92672">&lt;execution&gt;</span>
+        <span style="color:#f92672">&lt;id&gt;</span>copy<span style="color:#f92672">&lt;/id&gt;</span>
+        <span style="color:#f92672">&lt;phase&gt;</span>package<span style="color:#f92672">&lt;/phase&gt;</span>
+        <span style="color:#f92672">&lt;goals&gt;</span>
+          <span style="color:#75715e">&lt;!-- 拷贝依赖到指定路径下面 --&gt;</span>
+          <span style="color:#f92672">&lt;goal&gt;</span>copy-dependencies<span style="color:#f92672">&lt;/goal&gt;</span>
+        <span style="color:#f92672">&lt;/goals&gt;</span>
+        <span style="color:#f92672">&lt;configuration&gt;</span>
+          <span style="color:#f92672">&lt;outputDirectory&gt;</span>${project.build.directory}/lib<span style="color:#f92672">&lt;/outputDirectory&gt;</span>
+        <span style="color:#f92672">&lt;/configuration&gt;</span>
+      <span style="color:#f92672">&lt;/execution&gt;</span>
+    <span style="color:#f92672">&lt;/executions&gt;</span>
+  <span style="color:#f92672">&lt;/plugin&gt;</span>
+<span style="color:#f92672">&lt;/plugins&gt;</span>
+</code></pre></div><h2 id="read-more">Read More</h2>
+<ul>
+<li><a href="plugins/maven-shade-plugin.md">maven-shade-plugin</a></li>
+<li><a href="plugins/maven-assembly-plugin.md">maven-assembly-plugin</a></li>
+</ul>
+</article>
+ 
+
+      <footer class="book-footer">
+        
+  <div class="flex justify-between">
+
+
+
+  <div>
+    
+    <a class="flex align-center" href="https://github.com/hello-world-example/Maven/commit/ac13c534f695dffc041da20a0b55c971d48df91a" title='Last modified by 杨凯彬 | Mar 14, 2020' target="_blank" rel="noopener">
+      <img src="/Maven/svg/calendar.svg" class="book-icon" alt="Calendar" />
+      <span>Mar 14, 2020</span>
+    </a>
+  </div>
+
+
+
+  <div>
+    <a class="flex align-center" href="https://github.com/hello-world-example/Maven/edit/master/HuGo/content/docs/Action/Runnable-jar.md" target="_blank" rel="noopener">
+      <img src="/Maven/svg/edit.svg" class="book-icon" alt="Edit" />
+      <span>Edit this page</span>
+    </a>
+  </div>
+
+</div>
+
+ 
+        
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      </footer>
+      
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#方式一">方式一</a></li>
+    <li><a href="#read-more">Read More</a></li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

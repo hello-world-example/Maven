@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Custom Plugin"><meta property="og:title" content="" />
+<meta property="og:description" content="编写 maven 插件 本文主要通过编写一个插件来加深对maven插件机制 生命周期 插件目标 插件解析机制 等概念的理解，插件本身并没有实际功能，只是输出一句 Hello World。
+注意事项 和 概述   maven 插件的命名 &lt;name&gt;-maven-plugin
+  maven插件项目与一般maven项目，除了&lt;packaging&gt;&lt;/packaging&gt; 是 maven-plugin 以外，没有什么不同（&lt;packaging&gt;maven-plugin&lt;/packaging&gt;）
+  maven插件项目的依赖
+&lt;dependency&gt; &lt;groupId&gt;org.apache.maven&lt;/groupId&gt; &lt;artifactId&gt;maven-plugin-api&lt;/artifactId&gt; &lt;version&gt;3.3.3&lt;/version&gt; &lt;/dependency&gt;   编写maven插件可以使用两种风格的标注，直接写在注释中(javadoc)，或者使用JDK1.5&#43;的注解的形式，如果使用注解的形式，需要使用依赖
+&lt;dependency&gt; &lt;groupId&gt;org.apache.maven.plugin-tools&lt;/groupId&gt; &lt;artifactId&gt;maven-plugin-annotations&lt;/artifactId&gt; &lt;version&gt;3.5&lt;/version&gt; &lt;/dependency&gt; 以下两种声明目标的方式(@goal print和@Mojo(name = &quot;print&quot;))是一样的， 因为使用的时候是通过jar包中的plugin-help.xml文件 (&lt;name&gt;-maven-plugin-&lt;version&gt;.jar\META-INF\maven\&lt;groupId&gt;\&lt;name&gt;-maven-plugin\plugin-help.xml) 来识别目标、参数等相关信息的。
+如下展示了，声明 print 目标的两种方式。
+@Mojo(name = &#34;print&#34;) public class HelloMojo extends AbstractMojo { public void execute() throws MojoExecutionException, MojoFailureException {} } 和
+/** * @goal print */ public class HelloMojo extends AbstractMojo { public void execute() throws MojoExecutionException, MojoFailureException{} }   编写具体插件的时候需继承 AbstractMojo 类，实现其中的 execute 方法，MOJO即 Maven Ordinary Java Object [ 参见 POJO（Plain Ordinary Java Object）]" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hello-world-example.github.io/Maven/docs/Custom-Plugin/" />
+<meta property="article:modified_time" content="2020-03-14T18:20:20+08:00" />
+<title>Custom Plugin | Maven</title>
+<link rel="icon" href="/Maven/favicon.png" type="image/x-icon">
+
+
+<link rel="stylesheet" href="/Maven/book.min.5ffea21f70a71b9e6059006c33cc74cf184e208cb9897c6b24840c9f4e0e385e.css" integrity="sha256-X/6iH3CnG55gWQBsM8x0zxhOIIy5iXxrJIQMn04OOF4=">
+
+
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body>
+  <input type="checkbox" class="hidden" id="menu-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/Maven"><span>Maven</span>
+  </a>
+</h2>
+
+
+
+
+
+
+  <ul>
+<li><a href="/Maven/docs/Nexus/">Nexus 私服</a></li>
+<li><a href="/Maven/docs/Custom-Plugin/"class=active>编写 Maven 插件</a></li>
+<li><a href="/Maven/docs/Reactor/">反应堆</a></li>
+<li><strong>FAQ</strong>
+<ul>
+<li><a href="/Maven/docs/FAQ/SNAPSHOT-U/">SNAPSHOT 更新策略</a></li>
+<li><a href="/Maven/docs/FAQ/Parent-vs-Import/">parent 和 import 的区别</a></li>
+</ul>
+</li>
+<li><strong>官方插件</strong>
+<ul>
+<li><a href="/Maven/docs/plugins/maven-help-plugin/">maven-help-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-dependency-plugin/">maven-dependency-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-shade-plugin/">maven-shade-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-assembly-plugin/">maven-assembly-plugin</a></li>
+</ul>
+</li>
+<li><strong>第三方插件</strong>
+<ul>
+<li><a href="/Maven/docs/plugins/versions-maven-plugin/">versions-maven-plugin</a></li>
+</ul>
+</li>
+<li><strong>Action</strong>
+<ul>
+<li><a href="/Maven/docs/Action/Runnable-jar/">可运行 jar</a></li>
+</ul>
+</li>
+</ul>
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/Maven/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Custom Plugin</strong>
+
+  <label for="toc-control">
+    <img src="/Maven/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+  </label>
+</div>
+
+
+  
+    <input type="checkbox" class="hidden" id="toc-control" />
+    <aside class="hidden clearfix">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#注意事项-和-概述">注意事项 和 概述</a></li>
+        <li><a href="#创建生成一个maven-plugin项目">创建/生成一个Maven Plugin项目</a></li>
+        <li><a href="#稍微修改一下-mymojo">稍微修改一下 MyMojo</a></li>
+        <li><a href="#发布到本地仓库">发布到本地仓库</a></li>
+        <li><a href="#使用插件">使用插件</a></li>
+        <li><a href="#配置--目标绑定">配置 &amp; 目标绑定</a></li>
+        <li><a href="#查询插件信息">查询插件信息</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+    </aside>
+  
+ 
+      </header>
+
+      
+<article class="markdown"><h1 id="编写-maven-插件">编写 maven 插件</h1>
+<p>本文主要通过编写一个插件来加深对<code>maven插件机制</code> <code>生命周期</code> <code>插件目标</code> <code>插件解析机制</code> 等概念的理解，插件本身并没有实际功能，只是输出一句 <code>Hello World</code>。</p>
+<h3 id="注意事项-和-概述">注意事项 和 概述</h3>
+<ol>
+<li>
+<p>maven 插件的命名 <code>&lt;name&gt;-maven-plugin</code></p>
+</li>
+<li>
+<p>maven插件项目与一般maven项目，除了<code>&lt;packaging&gt;&lt;/packaging&gt;</code> 是 <code>maven-plugin</code> 以外，没有什么不同（<code>&lt;packaging&gt;maven-plugin&lt;/packaging&gt;</code>）</p>
+</li>
+<li>
+<p>maven插件项目的依赖</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;dependency&gt;</span>
+  <span style="color:#f92672">&lt;groupId&gt;</span>org.apache.maven<span style="color:#f92672">&lt;/groupId&gt;</span>
+  <span style="color:#f92672">&lt;artifactId&gt;</span>maven-plugin-api<span style="color:#f92672">&lt;/artifactId&gt;</span>
+  <span style="color:#f92672">&lt;version&gt;</span>3.3.3<span style="color:#f92672">&lt;/version&gt;</span>
+<span style="color:#f92672">&lt;/dependency&gt;</span>
+</code></pre></div></li>
+<li>
+<p>编写maven插件可以使用两种风格的标注，直接<code>写在注释中(javadoc)</code>，或者使用JDK1.5+的<code>注解的形式</code>，如果使用注解的形式，需要使用依赖</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;dependency&gt;</span>
+  <span style="color:#f92672">&lt;groupId&gt;</span>org.apache.maven.plugin-tools<span style="color:#f92672">&lt;/groupId&gt;</span>
+  <span style="color:#f92672">&lt;artifactId&gt;</span>maven-plugin-annotations<span style="color:#f92672">&lt;/artifactId&gt;</span>
+  <span style="color:#f92672">&lt;version&gt;</span>3.5<span style="color:#f92672">&lt;/version&gt;</span>
+<span style="color:#f92672">&lt;/dependency&gt;</span>
+</code></pre></div><p>以下两种声明目标的方式(<code>@goal print</code>和<code>@Mojo(name = &quot;print&quot;)</code>)是一样的，
+因为使用的时候是通过jar包中的<code>plugin-help.xml</code>文件
+(<code>&lt;name&gt;-maven-plugin-&lt;version&gt;.jar\META-INF\maven\&lt;groupId&gt;\&lt;name&gt;-maven-plugin\plugin-help.xml</code>)
+来识别目标、参数等相关信息的。<br>
+如下展示了，声明 print 目标的两种方式。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Mojo</span><span style="color:#f92672">(</span>name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;print&#34;</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloMojo</span> <span style="color:#66d9ef">extends</span> AbstractMojo <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">execute</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> MojoExecutionException<span style="color:#f92672">,</span> MojoFailureException <span style="color:#f92672">{}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>和</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#75715e">/**
+</span><span style="color:#75715e"> * @goal print
+</span><span style="color:#75715e"> */</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloMojo</span> <span style="color:#66d9ef">extends</span> AbstractMojo <span style="color:#f92672">{</span>
+  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">execute</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> MojoExecutionException<span style="color:#f92672">,</span> MojoFailureException<span style="color:#f92672">{}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div></li>
+<li>
+<p>编写具体插件的时候需继承 AbstractMojo 类，实现其中的 <code>execute</code> 方法，MOJO即 Maven Ordinary Java Object [ 参见 POJO（Plain Ordinary Java Object）]</p>
+</li>
+</ol>
+<h3 id="创建生成一个maven-plugin项目">创建/生成一个Maven Plugin项目</h3>
+<ol>
+<li>输入<code>mvn archetype:generate -DarchetypeCatalog=internal</code></li>
+<li>这时候会提示，要使用哪个模版，如下，输入<code>3</code>,选择<code>maven-archetype-plugin</code>，也可以输入关键字进行搜索，然后进行选择</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Choose archetype:
+……
+2: internal -&gt; org.apache.maven.archetypes:maven-archetype-j2ee-simple <span style="color:#f92672">(</span>An archetype which contains a simplifed sample J2EE application.<span style="color:#f92672">)</span>
+3: internal -&gt; org.apache.maven.archetypes:maven-archetype-plugin <span style="color:#f92672">(</span>An archetype which contains a sample Maven plugin.<span style="color:#f92672">)</span>
+4: internal -&gt; org.apache.maven.archetypes:maven-archetype-plugin-site <span style="color:#f92672">(</span>An archetype which contains a sample Maven plugin site.
+……
+</code></pre></div><ol start="3">
+<li>
+<p>接下来会提示输入 <code>&lt;groupId&gt;:com.kail.maven.plugin</code>、<code>&lt;artifactId&gt;:hello-maven-plugin</code>、<code>&lt;version&gt;:1.0-SNAPSHOT</code>、<code>&lt;package&gt;:com.kail.maven.plugin</code> 等信息。</p>
+</li>
+<li>
+<p>以上执行没问题的话 会生成一个 <code>hello-maven-plugin</code> 的Maven项目，Mojo 关键代码如下：</p>
+</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#f92672">package</span> com.kail.maven.plugin<span style="color:#f92672">;</span>
+
+<span style="color:#a6e22e">@Mojo</span><span style="color:#f92672">(</span> name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;touch&#34;</span><span style="color:#f92672">,</span> defaultPhase <span style="color:#f92672">=</span> LifecyclePhase<span style="color:#f92672">.</span><span style="color:#a6e22e">PROCESS_SOURCES</span> <span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MyMojo</span> <span style="color:#66d9ef">extends</span> AbstractMojo<span style="color:#f92672">{</span>
+
+  <span style="color:#a6e22e">@Parameter</span><span style="color:#f92672">(</span> defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;${project.build.directory}&#34;</span><span style="color:#f92672">,</span> property <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;outputDir&#34;</span><span style="color:#f92672">,</span> required <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span> <span style="color:#f92672">)</span>
+  <span style="color:#66d9ef">private</span> File outputDirectory<span style="color:#f92672">;</span>
+
+  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">execute</span><span style="color:#f92672">()</span><span style="color:#66d9ef">throws</span> MojoExecutionException<span style="color:#f92672">{</span>
+    <span style="color:#960050;background-color:#1e0010">……</span>
+  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="稍微修改一下-mymojo">稍微修改一下 MyMojo</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-java" data-lang="java"><span style="color:#a6e22e">@Mojo</span><span style="color:#f92672">(</span>name <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;print&#34;</span><span style="color:#f92672">,</span> defaultPhase <span style="color:#f92672">=</span> LifecyclePhase<span style="color:#f92672">.</span><span style="color:#a6e22e">CLEAN</span><span style="color:#f92672">)</span>
+<span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">HelloMojo</span> <span style="color:#66d9ef">extends</span> AbstractMojo <span style="color:#f92672">{</span>  
+
+  <span style="color:#a6e22e">@Parameter</span><span style="color:#f92672">(</span>defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;${project.build.directory}&#34;</span><span style="color:#f92672">,</span> property <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;outputDir&#34;</span><span style="color:#f92672">,</span> required <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span><span style="color:#f92672">)</span>
+  <span style="color:#66d9ef">private</span> File outputDirectory<span style="color:#f92672">;</span>  
+
+  <span style="color:#a6e22e">@Parameter</span><span style="color:#f92672">(</span>defaultValue <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;World&#34;</span><span style="color:#f92672">,</span> property <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;maven.sayHello&#34;</span><span style="color:#f92672">)</span>
+  <span style="color:#66d9ef">private</span> String text<span style="color:#f92672">;</span>  
+
+  <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">execute</span><span style="color:#f92672">()</span> <span style="color:#66d9ef">throws</span> MojoExecutionException <span style="color:#f92672">{</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">null</span> <span style="color:#f92672">!=</span> outputDirectory<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+      getLog<span style="color:#f92672">().</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;==&#34;</span> <span style="color:#f92672">+</span> outputDirectory<span style="color:#f92672">.</span><span style="color:#a6e22e">getAbsolutePath</span><span style="color:#f92672">());</span>
+    <span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+      getLog<span style="color:#f92672">().</span><span style="color:#a6e22e">error</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;outputDirectory is null&#34;</span><span style="color:#f92672">);</span>
+    <span style="color:#f92672">}</span>
+
+    getLog<span style="color:#f92672">().</span><span style="color:#a6e22e">info</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Hello &#34;</span> <span style="color:#f92672">+</span> text<span style="color:#f92672">);</span>
+  <span style="color:#f92672">}</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><h3 id="发布到本地仓库">发布到本地仓库</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mvn clean install
+</code></pre></div><h3 id="使用插件">使用插件</h3>
+<h5 id="直接使用">直接使用</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mvn com.kail.maven.plugin:hello-maven-plugin:1.0-SNAPSHOT:print 
+</code></pre></div><p>输出</p>
+<pre><code>……
+[INFO] ------------------------------------------------------------------------
+[INFO] Building hello-maven-plugin Maven Plugin 1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+……
+
+[INFO] ==D:\Java\JetBrains\idea.2016\hello-maven-plugin\target
+[INFO] Hello World
+……
+</code></pre>
+<p>使用参数<code>-Dmaven.sayHello=Kail</code> 设置变量 <code>text</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mvn com.kail.maven.plugin:hello-maven-plugin:1.0-SNAPSHOT:print -Dmaven.sayHello<span style="color:#f92672">=</span>Kail
+</code></pre></div><p>输出</p>
+<pre><code>……
+[INFO] ------------------------------------------------------------------------
+[INFO] Building hello-maven-plugin Maven Plugin 1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+……
+
+[INFO] ==D:\Java\JetBrains\idea.2016\hello-maven-plugin\target
+[INFO] Hello Kail
+……
+</code></pre>
+<h5 id="简写形式目标前缀">简写形式（目标前缀）</h5>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mvn hello:print 
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mvn hello:print -Dmaven.sayHello<span style="color:#f92672">=</span>Kail
+</code></pre></div><p>如果插件命名规范（如这种形式<code>&lt;name&gt;-maven-plugin</code>），并且pom中配置了对 <code>hello-maven-plugin</code> 插件的依赖，以上简写形式执行是没问题的。
+如果pom中没有配置对 <code>hello-maven-plugin</code> 插件的依赖，也想通过以上简写形式执行的话，需要在 settings.xml 文件中配置一下信息。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;pluginGroups&gt;</span>
+  <span style="color:#f92672">&lt;pluginGroup&gt;</span>com.kail.maven.plugin<span style="color:#f92672">&lt;/pluginGroup&gt;</span>
+<span style="color:#f92672">&lt;/pluginGroups&gt;</span>
+</code></pre></div><p>这时候maven就能自动补全，简写补全的搜索路径顺序如下：</p>
+<ol>
+<li>
+<p>.m2\repository\org\apache\maven\plugins\maven-metadata-central.xml</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;metadata&gt;</span>
+  <span style="color:#f92672">&lt;plugins&gt;</span>
+    ……
+    <span style="color:#f92672">&lt;plugin&gt;</span>
+      <span style="color:#f92672">&lt;name&gt;</span>Maven Archetype Plugin<span style="color:#f92672">&lt;/name&gt;</span>
+      <span style="color:#f92672">&lt;prefix&gt;</span>archetype<span style="color:#f92672">&lt;/prefix&gt;</span>
+      <span style="color:#f92672">&lt;artifactId&gt;</span>maven-archetype-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+    <span style="color:#f92672">&lt;/plugin&gt;</span>
+    ……
+  <span style="color:#f92672">&lt;/plugins&gt;</span>
+<span style="color:#f92672">&lt;/metadata&gt;</span>
+</code></pre></div></li>
+<li>
+<p>.m2\repository\org\codehaus\mojo\maven-metadata-central.xml</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;metadata&gt;</span>
+  <span style="color:#f92672">&lt;plugins&gt;</span>
+    ……
+    <span style="color:#f92672">&lt;plugin&gt;</span>
+      <span style="color:#f92672">&lt;name&gt;</span>Dependency Maven Plugin<span style="color:#f92672">&lt;/name&gt;</span>
+      <span style="color:#f92672">&lt;prefix&gt;</span>dependency<span style="color:#f92672">&lt;/prefix&gt;</span>
+      <span style="color:#f92672">&lt;artifactId&gt;</span>dependency-maven-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+    <span style="color:#f92672">&lt;/plugin&gt;</span>
+    ……
+  <span style="color:#f92672">&lt;/plugins&gt;</span>
+<span style="color:#f92672">&lt;/metadata&gt;</span>
+</code></pre></div></li>
+<li>
+<p>.m2\repository\com\kail\maven\plugin\maven-metadata-local.xml</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;metadata&gt;</span>
+  <span style="color:#f92672">&lt;plugins&gt;</span>
+    ……
+    <span style="color:#f92672">&lt;plugin&gt;</span>
+      <span style="color:#f92672">&lt;name&gt;</span>hello-maven-plugin Maven Plugin<span style="color:#f92672">&lt;/name&gt;</span>
+      <span style="color:#f92672">&lt;prefix&gt;</span>hello<span style="color:#f92672">&lt;/prefix&gt;</span>
+      <span style="color:#f92672">&lt;artifactId&gt;</span>hello-maven-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+    <span style="color:#f92672">&lt;/plugin&gt;</span>
+    ……
+  <span style="color:#f92672">&lt;/plugins&gt;</span>
+<span style="color:#f92672">&lt;/metadata&gt;</span>
+</code></pre></div></li>
+</ol>
+<h3 id="配置--目标绑定">配置 &amp; 目标绑定</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;plugin&gt;</span>
+  <span style="color:#f92672">&lt;groupId&gt;</span>com.kail.maven.plugin<span style="color:#f92672">&lt;/groupId&gt;</span>
+  <span style="color:#f92672">&lt;artifactId&gt;</span>hello-maven-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+  <span style="color:#f92672">&lt;version&gt;</span>1.0-SNAPSHOT<span style="color:#f92672">&lt;/version&gt;</span>
+  <span style="color:#f92672">&lt;configuration&gt;</span>
+    <span style="color:#f92672">&lt;text&gt;</span>Mr.Kail<span style="color:#f92672">&lt;/text&gt;</span>
+  <span style="color:#f92672">&lt;/configuration&gt;</span>
+  <span style="color:#f92672">&lt;executions&gt;</span>
+    <span style="color:#f92672">&lt;execution&gt;</span>
+      <span style="color:#75715e">&lt;!--多个 execution 的时候需要写ID，一个的话可以不写--&gt;</span>
+      <span style="color:#f92672">&lt;id&gt;</span>id-clean-print<span style="color:#f92672">&lt;/id&gt;</span>
+      <span style="color:#75715e">&lt;!--目标`print`默认生命周期是clean [ @Mojo(name = &#34;print&#34;, defaultPhase = LifecyclePhase.CLEAN) ]，所以可以不写phase--&gt;</span>
+      <span style="color:#f92672">&lt;goals&gt;</span>
+        <span style="color:#f92672">&lt;goal&gt;</span>print<span style="color:#f92672">&lt;/goal&gt;</span>
+      <span style="color:#f92672">&lt;/goals&gt;</span>
+    <span style="color:#f92672">&lt;/execution&gt;</span>
+    <span style="color:#f92672">&lt;execution&gt;</span>
+      <span style="color:#75715e">&lt;!--多个 execution 的时候需要写ID，一个的话可以不写--&gt;</span>
+      <span style="color:#f92672">&lt;id&gt;</span>id-validate-print<span style="color:#f92672">&lt;/id&gt;</span>
+      <span style="color:#75715e">&lt;!--将创建的目标`print`绑定到 `validate` 生命周期上--&gt;</span>
+      <span style="color:#f92672">&lt;phase&gt;</span>validate<span style="color:#f92672">&lt;/phase&gt;</span>
+      <span style="color:#f92672">&lt;goals&gt;</span>
+        <span style="color:#f92672">&lt;goal&gt;</span>print<span style="color:#f92672">&lt;/goal&gt;</span>
+      <span style="color:#f92672">&lt;/goals&gt;</span>
+      <span style="color:#f92672">&lt;configuration&gt;</span>
+        <span style="color:#f92672">&lt;text&gt;</span>Mr.Kail(validate)<span style="color:#f92672">&lt;/text&gt;</span>
+      <span style="color:#f92672">&lt;/configuration&gt;</span>
+    <span style="color:#f92672">&lt;/execution&gt;</span>
+  <span style="color:#f92672">&lt;/executions&gt;</span>
+<span style="color:#f92672">&lt;/plugin&gt;</span>
+</code></pre></div><p>执行</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mvn clean
+</code></pre></div><p>输出</p>
+<pre><code>……
+[INFO] Hello Mr.Kail
+……
+</code></pre>
+<p>执行</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mvn validate
+</code></pre></div><p>输出</p>
+<pre><code>……
+[INFO] Hello Mr.Kail(validate)
+……
+</code></pre>
+<p>执行</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mvn clean validate
+</code></pre></div><p>输出</p>
+<pre><code>……
+[INFO] Hello Mr.Kail
+……
+[INFO] Hello Mr.Kail(validate)
+……
+</code></pre>
+<h3 id="查询插件信息">查询插件信息</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mvn help:describe -Dplugin<span style="color:#f92672">=</span>com.kail.maven.plugin:hello-maven-plugin:1.0-SNAPSHOT
+</code></pre></div><pre><code>Name: hello-maven-plugin Maven Plugin
+Description: (no description available)
+Group Id: com.kail.maven.plugin
+Artifact Id: hello-maven-plugin
+Version: 1.0-SNAPSHOT
+Goal Prefix: hello
+
+This plugin has 1 goal:
+
+hello:print
+  Description: (no description available)
+
+For more information, run 'mvn help:describe [...] -Ddetail'
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mvn help:describe -Dplugin<span style="color:#f92672">=</span>com.kail.maven.plugin:hello-maven-plugin:1.0-SNAPSHOT -Ddetail
+</code></pre></div><pre><code>Name: hello-maven-plugin Maven Plugin
+Description: (no description available)
+Group Id: com.kail.maven.plugin
+Artifact Id: hello-maven-plugin
+Version: 1.0-SNAPSHOT
+Goal Prefix: hello
+
+This plugin has 1 goal:
+
+hello:print
+  Description: (no description available)
+  Implementation: com.kail.maven.plugin.HelloMojo
+  Language: java
+  Bound to phase: clean
+
+  Available parameters:
+
+    outputDirectory (Default: ${project.build.directory})
+      Required: true
+      User property: outputDir
+      (no description available)
+
+    text (Default: World)
+      User property: maven.sayHello
+      (no description available)
+</code></pre>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 查询某个目标</span>
+mvn help:describe -Dplugin<span style="color:#f92672">=</span>com.kail.maven.plugin:hello-maven-plugin:1.0-SNAPSHOT -Ddetail -Dgoal<span style="color:#f92672">=</span>print
+<span style="color:#75715e"># 简写</span>
+mvn help:describe -Dplugin<span style="color:#f92672">=</span>hello -Ddetail
+</code></pre></div><blockquote>
+<p>参考</p>
+<p><a href="https://item.jd.com/10476794.html">《Maven实战》 第7章_生命周期和插件 和 第17章_编写Maven插件)</a></p>
+<p><a href="http://orchome.com/103">maven开发java插件【译】</a></p>
+<p><a href="http://maven.apache.org/guides/plugin/guide-java-plugin-development.html">Your First Mojo</a></p>
+<p><a href="http://maven.apache.org/developers/mojo-api-specification.html">Mojo API</a></p>
+</blockquote>
+</article>
+ 
+
+      <footer class="book-footer">
+        
+  <div class="flex justify-between">
+
+
+
+  <div>
+    
+    <a class="flex align-center" href="https://github.com/hello-world-example/Maven/commit/ac13c534f695dffc041da20a0b55c971d48df91a" title='Last modified by 杨凯彬 | Mar 14, 2020' target="_blank" rel="noopener">
+      <img src="/Maven/svg/calendar.svg" class="book-icon" alt="Calendar" />
+      <span>Mar 14, 2020</span>
+    </a>
+  </div>
+
+
+
+  <div>
+    <a class="flex align-center" href="https://github.com/hello-world-example/Maven/edit/master/HuGo/content/docs/Custom-Plugin.md" target="_blank" rel="noopener">
+      <img src="/Maven/svg/edit.svg" class="book-icon" alt="Edit" />
+      <span>Edit this page</span>
+    </a>
+  </div>
+
+</div>
+
+ 
+        
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      </footer>
+      
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#注意事项-和-概述">注意事项 和 概述</a></li>
+        <li><a href="#创建生成一个maven-plugin项目">创建/生成一个Maven Plugin项目</a></li>
+        <li><a href="#稍微修改一下-mymojo">稍微修改一下 MyMojo</a></li>
+        <li><a href="#发布到本地仓库">发布到本地仓库</a></li>
+        <li><a href="#使用插件">使用插件</a></li>
+        <li><a href="#配置--目标绑定">配置 &amp; 目标绑定</a></li>
+        <li><a href="#查询插件信息">查询插件信息</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

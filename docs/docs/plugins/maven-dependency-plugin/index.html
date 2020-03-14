@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Maven Dependency Plugin"><meta property="og:title" content="" />
+<meta property="og:description" content="maven-dependency-plugin 将依赖的jar包拷贝到 lib 目录下面 &lt;plugin&gt; &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt; &lt;artifactId&gt;maven-dependency-plugin&lt;/artifactId&gt; &lt;executions&gt; &lt;execution&gt; &lt;id&gt;copy&lt;/id&gt; &lt;phase&gt;package&lt;/phase&gt; &lt;goals&gt; &lt;goal&gt;copy-dependencies&lt;/goal&gt; &lt;/goals&gt; &lt;configuration&gt; &lt;outputDirectory&gt; &lt;!--拷贝到构建目录的lib文件夹下 --&gt; ${project.build.directory}/lib &lt;/outputDirectory&gt; &lt;/configuration&gt; &lt;/execution&gt; &lt;/executions&gt; &lt;/plugin&gt; 查看树形依赖 mvn dependency:tree 查看依赖列表 mvn dependency:list 其他   dependency:copy 用来拷贝某一个或多个特定文件到指定目录；
+  dependency:copy-dependencies 用来拷贝依赖的文件到指定目录；
+  dependency:unpack 与 copy 类似，但会解压文件；
+  dependency:unpack-dependencies 与 copy-dependencies 类似，但会解压文件；
+  Read More  Apache Maven Dependency Plugin 查看maven项目的依赖关系 mvn dependency:tree  " />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hello-world-example.github.io/Maven/docs/plugins/maven-dependency-plugin/" />
+<meta property="article:modified_time" content="2020-03-14T18:20:20+08:00" />
+<title>Maven Dependency Plugin | Maven</title>
+<link rel="icon" href="/Maven/favicon.png" type="image/x-icon">
+
+
+<link rel="stylesheet" href="/Maven/book.min.5ffea21f70a71b9e6059006c33cc74cf184e208cb9897c6b24840c9f4e0e385e.css" integrity="sha256-X/6iH3CnG55gWQBsM8x0zxhOIIy5iXxrJIQMn04OOF4=">
+
+
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body>
+  <input type="checkbox" class="hidden" id="menu-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/Maven"><span>Maven</span>
+  </a>
+</h2>
+
+
+
+
+
+
+  <ul>
+<li><a href="/Maven/docs/Nexus/">Nexus 私服</a></li>
+<li><a href="/Maven/docs/Custom-Plugin/">编写 Maven 插件</a></li>
+<li><a href="/Maven/docs/Reactor/">反应堆</a></li>
+<li><strong>FAQ</strong>
+<ul>
+<li><a href="/Maven/docs/FAQ/SNAPSHOT-U/">SNAPSHOT 更新策略</a></li>
+<li><a href="/Maven/docs/FAQ/Parent-vs-Import/">parent 和 import 的区别</a></li>
+</ul>
+</li>
+<li><strong>官方插件</strong>
+<ul>
+<li><a href="/Maven/docs/plugins/maven-help-plugin/">maven-help-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-dependency-plugin/"class=active>maven-dependency-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-shade-plugin/">maven-shade-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-assembly-plugin/">maven-assembly-plugin</a></li>
+</ul>
+</li>
+<li><strong>第三方插件</strong>
+<ul>
+<li><a href="/Maven/docs/plugins/versions-maven-plugin/">versions-maven-plugin</a></li>
+</ul>
+</li>
+<li><strong>Action</strong>
+<ul>
+<li><a href="/Maven/docs/Action/Runnable-jar/">可运行 jar</a></li>
+</ul>
+</li>
+</ul>
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/Maven/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Maven Dependency Plugin</strong>
+
+  <label for="toc-control">
+    <img src="/Maven/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+  </label>
+</div>
+
+
+  
+    <input type="checkbox" class="hidden" id="toc-control" />
+    <aside class="hidden clearfix">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#将依赖的jar包拷贝到-lib-目录下面">将依赖的jar包拷贝到 lib 目录下面</a></li>
+    <li><a href="#查看树形依赖">查看树形依赖</a></li>
+    <li><a href="#查看依赖列表">查看依赖列表</a></li>
+    <li><a href="#其他">其他</a></li>
+    <li><a href="#read-more">Read More</a></li>
+  </ul>
+</nav>
+
+
+    </aside>
+  
+ 
+      </header>
+
+      
+<article class="markdown"><h1 id="maven-dependency-plugin">maven-dependency-plugin</h1>
+<h2 id="将依赖的jar包拷贝到-lib-目录下面">将依赖的jar包拷贝到 lib 目录下面</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;plugin&gt;</span>
+  <span style="color:#f92672">&lt;groupId&gt;</span>org.apache.maven.plugins<span style="color:#f92672">&lt;/groupId&gt;</span>
+  <span style="color:#f92672">&lt;artifactId&gt;</span>maven-dependency-plugin<span style="color:#f92672">&lt;/artifactId&gt;</span>
+  <span style="color:#f92672">&lt;executions&gt;</span>
+    <span style="color:#f92672">&lt;execution&gt;</span>
+      <span style="color:#f92672">&lt;id&gt;</span>copy<span style="color:#f92672">&lt;/id&gt;</span>
+      <span style="color:#f92672">&lt;phase&gt;</span>package<span style="color:#f92672">&lt;/phase&gt;</span>
+      <span style="color:#f92672">&lt;goals&gt;</span>
+        <span style="color:#f92672">&lt;goal&gt;</span>copy-dependencies<span style="color:#f92672">&lt;/goal&gt;</span>
+      <span style="color:#f92672">&lt;/goals&gt;</span>
+      <span style="color:#f92672">&lt;configuration&gt;</span>
+        <span style="color:#f92672">&lt;outputDirectory&gt;</span>
+          <span style="color:#75715e">&lt;!--拷贝到构建目录的lib文件夹下 --&gt;</span>
+          ${project.build.directory}/lib
+        <span style="color:#f92672">&lt;/outputDirectory&gt;</span>
+      <span style="color:#f92672">&lt;/configuration&gt;</span>
+    <span style="color:#f92672">&lt;/execution&gt;</span>
+  <span style="color:#f92672">&lt;/executions&gt;</span>
+<span style="color:#f92672">&lt;/plugin&gt;</span>
+</code></pre></div><h2 id="查看树形依赖">查看树形依赖</h2>
+<pre><code>mvn dependency:tree
+</code></pre><h2 id="查看依赖列表">查看依赖列表</h2>
+<pre><code>mvn dependency:list
+</code></pre><h2 id="其他">其他</h2>
+<ul>
+<li>
+<p><code>dependency:copy</code>  用来拷贝某一个或多个特定文件到指定目录；</p>
+</li>
+<li>
+<p><code>dependency:copy-dependencies</code>  用来拷贝依赖的文件到指定目录；</p>
+</li>
+<li>
+<p><code>dependency:unpack</code>  与 copy 类似，但会解压文件；</p>
+</li>
+<li>
+<p><code>dependency:unpack-dependencies</code> 与 copy-dependencies 类似，但会解压文件；</p>
+</li>
+</ul>
+<h2 id="read-more">Read More</h2>
+<ul>
+<li><a href="http://maven.apache.org/plugins/maven-dependency-plugin/">Apache Maven Dependency Plugin</a></li>
+<li><a href="https://www.cnblogs.com/ghj1976/p/5336923.html">查看maven项目的依赖关系 mvn dependency:tree</a></li>
+</ul>
+</article>
+ 
+
+      <footer class="book-footer">
+        
+  <div class="flex justify-between">
+
+
+
+  <div>
+    
+    <a class="flex align-center" href="https://github.com/hello-world-example/Maven/commit/ac13c534f695dffc041da20a0b55c971d48df91a" title='Last modified by 杨凯彬 | Mar 14, 2020' target="_blank" rel="noopener">
+      <img src="/Maven/svg/calendar.svg" class="book-icon" alt="Calendar" />
+      <span>Mar 14, 2020</span>
+    </a>
+  </div>
+
+
+
+  <div>
+    <a class="flex align-center" href="https://github.com/hello-world-example/Maven/edit/master/HuGo/content/docs/plugins/maven-dependency-plugin.md" target="_blank" rel="noopener">
+      <img src="/Maven/svg/edit.svg" class="book-icon" alt="Edit" />
+      <span>Edit this page</span>
+    </a>
+  </div>
+
+</div>
+
+ 
+        
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      </footer>
+      
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#将依赖的jar包拷贝到-lib-目录下面">将依赖的jar包拷贝到 lib 目录下面</a></li>
+    <li><a href="#查看树形依赖">查看树形依赖</a></li>
+    <li><a href="#查看依赖列表">查看依赖列表</a></li>
+    <li><a href="#其他">其他</a></li>
+    <li><a href="#read-more">Read More</a></li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

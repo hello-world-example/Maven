@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Nexus"><meta property="og:title" content="" />
+<meta property="og:description" content="Nexus 私服 Docker 安装 nexus3 $ docker pull sonatype/nexus3 # 5000 镜像仓库的服务端口 # 8081 nexus的服务端口 # 默认账号密码为admin/admin123 $ docker run -d --name nexus --restart=always -p 5000:5000 -p 8081:8081 sonatype/nexus3 三种仓库类型  hosted : 本地存储 proxy : 代理其他仓库 group : 组合多个仓库为一个地址  pom - distributionManagement &lt;distributionManagement&gt; &lt;repository&gt; &lt;id&gt;MyNexusPublic&lt;/id&gt; &lt;url&gt;http://localhost:8081/repository/maven-releases/&lt;/url&gt; &lt;/repository&gt; &lt;snapshotRepository&gt; &lt;id&gt;MyNexusSnapshot&lt;/id&gt; &lt;url&gt;http://localhost:8081/repository/maven-snapshots/&lt;/url&gt; &lt;/snapshotRepository&gt; &lt;/distributionManagement&gt; ​
+settings - servers 设置发布私服时的密码
+&lt;servers&gt; &lt;server&gt; &lt;id&gt;MyNexusPublic&lt;/id&gt; &lt;username&gt;admin&lt;/username&gt; &lt;password&gt;admin123&lt;/password&gt; &lt;/server&gt; &lt;server&gt; &lt;id&gt;MyNexusSnapshot&lt;/id&gt; &lt;username&gt;admin&lt;/username&gt; &lt;password&gt;admin123&lt;/password&gt; &lt;/server&gt; &lt;/servers&gt; Read More  Maven2部署构件到Nexus时出现的Failed to transfer file错误 docker部署Nexus  " />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hello-world-example.github.io/Maven/docs/Nexus/" />
+<meta property="article:modified_time" content="2020-03-14T18:20:20+08:00" />
+<title>Nexus | Maven</title>
+<link rel="icon" href="/Maven/favicon.png" type="image/x-icon">
+
+
+<link rel="stylesheet" href="/Maven/book.min.5ffea21f70a71b9e6059006c33cc74cf184e208cb9897c6b24840c9f4e0e385e.css" integrity="sha256-X/6iH3CnG55gWQBsM8x0zxhOIIy5iXxrJIQMn04OOF4=">
+
+
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body>
+  <input type="checkbox" class="hidden" id="menu-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/Maven"><span>Maven</span>
+  </a>
+</h2>
+
+
+
+
+
+
+  <ul>
+<li><a href="/Maven/docs/Nexus/"class=active>Nexus 私服</a></li>
+<li><a href="/Maven/docs/Custom-Plugin/">编写 Maven 插件</a></li>
+<li><a href="/Maven/docs/Reactor/">反应堆</a></li>
+<li><strong>FAQ</strong>
+<ul>
+<li><a href="/Maven/docs/FAQ/SNAPSHOT-U/">SNAPSHOT 更新策略</a></li>
+<li><a href="/Maven/docs/FAQ/Parent-vs-Import/">parent 和 import 的区别</a></li>
+</ul>
+</li>
+<li><strong>官方插件</strong>
+<ul>
+<li><a href="/Maven/docs/plugins/maven-help-plugin/">maven-help-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-dependency-plugin/">maven-dependency-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-shade-plugin/">maven-shade-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-assembly-plugin/">maven-assembly-plugin</a></li>
+</ul>
+</li>
+<li><strong>第三方插件</strong>
+<ul>
+<li><a href="/Maven/docs/plugins/versions-maven-plugin/">versions-maven-plugin</a></li>
+</ul>
+</li>
+<li><strong>Action</strong>
+<ul>
+<li><a href="/Maven/docs/Action/Runnable-jar/">可运行 jar</a></li>
+</ul>
+</li>
+</ul>
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/Maven/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Nexus</strong>
+
+  <label for="toc-control">
+    <img src="/Maven/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+  </label>
+</div>
+
+
+  
+    <input type="checkbox" class="hidden" id="toc-control" />
+    <aside class="hidden clearfix">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#docker-安装-nexus3">Docker 安装 nexus3</a></li>
+    <li><a href="#三种仓库类型">三种仓库类型</a></li>
+    <li><a href="#pom---distributionmanagement">pom - distributionManagement</a></li>
+    <li><a href="#settings---servers">settings - servers</a></li>
+    <li><a href="#read-more">Read More</a></li>
+  </ul>
+</nav>
+
+
+    </aside>
+  
+ 
+      </header>
+
+      
+<article class="markdown"><h1 id="nexus-私服">Nexus 私服</h1>
+<h2 id="docker-安装-nexus3">Docker 安装 nexus3</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker pull sonatype/nexus3
+
+<span style="color:#75715e"># 5000 镜像仓库的服务端口</span>
+<span style="color:#75715e"># 8081 nexus的服务端口</span>
+<span style="color:#75715e"># 默认账号密码为admin/admin123</span>
+$ docker run -d --name nexus  --restart<span style="color:#f92672">=</span>always -p 5000:5000 -p 8081:8081 sonatype/nexus3
+</code></pre></div><h2 id="三种仓库类型">三种仓库类型</h2>
+<ul>
+<li><code>hosted</code> : 本地存储</li>
+<li><code>proxy</code> : 代理其他仓库</li>
+<li><code>group</code> : 组合多个仓库为一个地址</li>
+</ul>
+<h2 id="pom---distributionmanagement">pom - distributionManagement</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;distributionManagement&gt;</span>
+
+    <span style="color:#f92672">&lt;repository&gt;</span>
+        <span style="color:#f92672">&lt;id&gt;</span>MyNexusPublic<span style="color:#f92672">&lt;/id&gt;</span>
+        <span style="color:#f92672">&lt;url&gt;</span>http://localhost:8081/repository/maven-releases/<span style="color:#f92672">&lt;/url&gt;</span>
+    <span style="color:#f92672">&lt;/repository&gt;</span>
+
+    <span style="color:#f92672">&lt;snapshotRepository&gt;</span>
+        <span style="color:#f92672">&lt;id&gt;</span>MyNexusSnapshot<span style="color:#f92672">&lt;/id&gt;</span>
+        <span style="color:#f92672">&lt;url&gt;</span>http://localhost:8081/repository/maven-snapshots/<span style="color:#f92672">&lt;/url&gt;</span>
+    <span style="color:#f92672">&lt;/snapshotRepository&gt;</span>
+
+<span style="color:#f92672">&lt;/distributionManagement&gt;</span>
+</code></pre></div><p>​</p>
+<h2 id="settings---servers">settings - servers</h2>
+<p>设置发布私服时的密码</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;servers&gt;</span>
+  
+    <span style="color:#f92672">&lt;server&gt;</span>
+        <span style="color:#f92672">&lt;id&gt;</span>MyNexusPublic<span style="color:#f92672">&lt;/id&gt;</span>
+        <span style="color:#f92672">&lt;username&gt;</span>admin<span style="color:#f92672">&lt;/username&gt;</span>
+        <span style="color:#f92672">&lt;password&gt;</span>admin123<span style="color:#f92672">&lt;/password&gt;</span>
+    <span style="color:#f92672">&lt;/server&gt;</span>
+
+    <span style="color:#f92672">&lt;server&gt;</span>
+        <span style="color:#f92672">&lt;id&gt;</span>MyNexusSnapshot<span style="color:#f92672">&lt;/id&gt;</span>
+        <span style="color:#f92672">&lt;username&gt;</span>admin<span style="color:#f92672">&lt;/username&gt;</span>
+        <span style="color:#f92672">&lt;password&gt;</span>admin123<span style="color:#f92672">&lt;/password&gt;</span>
+    <span style="color:#f92672">&lt;/server&gt;</span>
+
+<span style="color:#f92672">&lt;/servers&gt;</span>
+
+</code></pre></div><h2 id="read-more">Read More</h2>
+<ul>
+<li><a href="https://www.javatang.com/archives/2010/01/23/4518375.html">Maven2部署构件到Nexus时出现的Failed to transfer file错误</a></li>
+<li><a href="https://blog.csdn.net/m0_37444820/article/details/82721372">docker部署Nexus</a></li>
+</ul>
+</article>
+ 
+
+      <footer class="book-footer">
+        
+  <div class="flex justify-between">
+
+
+
+  <div>
+    
+    <a class="flex align-center" href="https://github.com/hello-world-example/Maven/commit/ac13c534f695dffc041da20a0b55c971d48df91a" title='Last modified by 杨凯彬 | Mar 14, 2020' target="_blank" rel="noopener">
+      <img src="/Maven/svg/calendar.svg" class="book-icon" alt="Calendar" />
+      <span>Mar 14, 2020</span>
+    </a>
+  </div>
+
+
+
+  <div>
+    <a class="flex align-center" href="https://github.com/hello-world-example/Maven/edit/master/HuGo/content/docs/Nexus.md" target="_blank" rel="noopener">
+      <img src="/Maven/svg/edit.svg" class="book-icon" alt="Edit" />
+      <span>Edit this page</span>
+    </a>
+  </div>
+
+</div>
+
+ 
+        
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      </footer>
+      
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#docker-安装-nexus3">Docker 安装 nexus3</a></li>
+    <li><a href="#三种仓库类型">三种仓库类型</a></li>
+    <li><a href="#pom---distributionmanagement">pom - distributionManagement</a></li>
+    <li><a href="#settings---servers">settings - servers</a></li>
+    <li><a href="#read-more">Read More</a></li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

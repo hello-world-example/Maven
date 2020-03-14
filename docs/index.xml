@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Maven</title>
+    <link>https://hello-world-example.github.io/Maven/</link>
+    <description>Recent content on Maven</description>
+    <generator>Hugo -- gohugo.io</generator>
+    
+	<atom:link href="https://hello-world-example.github.io/Maven/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title></title>
+      <link>https://hello-world-example.github.io/Maven/_sidebar/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hello-world-example.github.io/Maven/_sidebar/</guid>
+      <description> Nexus 私服 编写 Maven 插件 反应堆 FAQ  SNAPSHOT 更新策略 parent 和 import 的区别   官方插件  maven-help-plugin maven-dependency-plugin maven-shade-plugin maven-assembly-plugin   第三方插件  versions-maven-plugin   Action  可运行 jar    </description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://hello-world-example.github.io/Maven/docs/Action/Runnable-jar/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hello-world-example.github.io/Maven/docs/Action/Runnable-jar/</guid>
+      <description>可运行 jar 方式一 目录结构
+ target  MainApp.jar config/ lib/    所用插件
+&amp;lt;plugins&amp;gt; &amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;org.apache.maven.plugins&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;maven-jar-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.1.2&amp;lt;/version&amp;gt; &amp;lt;configuration&amp;gt; &amp;lt;archive&amp;gt; &amp;lt;manifest&amp;gt; &amp;lt;addClasspath&amp;gt;true&amp;lt;/addClasspath&amp;gt; &amp;lt;mainClass&amp;gt;xxx.MainApp&amp;lt;/mainClass&amp;gt; &amp;lt;classpathPrefix&amp;gt;lib/&amp;lt;/classpathPrefix&amp;gt; &amp;lt;!-- SNAPSHOT 版本 Class-Path 是 XXX-x.y.z-SNAPSHOT.jar --&amp;gt; &amp;lt;!-- 而不是 XXX-x.y.z-20190517.110547-4.jar --&amp;gt; &amp;lt;!-- 避免 Class-Path 与实际文件名不一致，找不到类 --&amp;gt; &amp;lt;useUniqueVersions&amp;gt;false&amp;lt;/useUniqueVersions&amp;gt; &amp;lt;/manifest&amp;gt; &amp;lt;!-- META-INF 文档属性 --&amp;gt; &amp;lt;manifestEntries&amp;gt; &amp;lt;Rose&amp;gt;*&amp;lt;/Rose&amp;gt; &amp;lt;!-- 将 config目录也加入到 classPath 下 --&amp;gt; &amp;lt;Class-Path&amp;gt;config/&amp;lt;/Class-Path&amp;gt; &amp;lt;/manifestEntries&amp;gt; &amp;lt;/archive&amp;gt; &amp;lt;excludes&amp;gt; &amp;lt;!-- 不打到 jar 包里面的文件 --&amp;gt; &amp;lt;exclude&amp;gt;config.properties&amp;lt;/exclude&amp;gt; &amp;lt;/excludes&amp;gt; &amp;lt;/configuration&amp;gt; &amp;lt;/plugin&amp;gt; &amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;org.apache.maven.plugins&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;maven-resources-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://hello-world-example.github.io/Maven/docs/Custom-Plugin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hello-world-example.github.io/Maven/docs/Custom-Plugin/</guid>
+      <description>编写 maven 插件 本文主要通过编写一个插件来加深对maven插件机制 生命周期 插件目标 插件解析机制 等概念的理解，插件本身并没有实际功能，只是输出一句 Hello World。
+注意事项 和 概述   maven 插件的命名 &amp;lt;name&amp;gt;-maven-plugin
+  maven插件项目与一般maven项目，除了&amp;lt;packaging&amp;gt;&amp;lt;/packaging&amp;gt; 是 maven-plugin 以外，没有什么不同（&amp;lt;packaging&amp;gt;maven-plugin&amp;lt;/packaging&amp;gt;）
+  maven插件项目的依赖
+&amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.apache.maven&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;maven-plugin-api&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.3.3&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt;   编写maven插件可以使用两种风格的标注，直接写在注释中(javadoc)，或者使用JDK1.5+的注解的形式，如果使用注解的形式，需要使用依赖
+&amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;org.apache.maven.plugin-tools&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;maven-plugin-annotations&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.5&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; 以下两种声明目标的方式(@goal print和@Mojo(name = &amp;quot;print&amp;quot;))是一样的， 因为使用的时候是通过jar包中的plugin-help.xml文件 (&amp;lt;name&amp;gt;-maven-plugin-&amp;lt;version&amp;gt;.jar\META-INF\maven\&amp;lt;groupId&amp;gt;\&amp;lt;name&amp;gt;-maven-plugin\plugin-help.xml) 来识别目标、参数等相关信息的。
+如下展示了，声明 print 目标的两种方式。
+@Mojo(name = &amp;#34;print&amp;#34;) public class HelloMojo extends AbstractMojo { public void execute() throws MojoExecutionException, MojoFailureException {} } 和
+/** * @goal print */ public class HelloMojo extends AbstractMojo { public void execute() throws MojoExecutionException, MojoFailureException{} }   编写具体插件的时候需继承 AbstractMojo 类，实现其中的 execute 方法，MOJO即 Maven Ordinary Java Object [ 参见 POJO（Plain Ordinary Java Object）]</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://hello-world-example.github.io/Maven/docs/FAQ/Parent-vs-Import/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hello-world-example.github.io/Maven/docs/FAQ/Parent-vs-Import/</guid>
+      <description>parent 和 import 的区别 parent 示例
+&amp;lt;!-- Inherit defaults from Spring Boot --&amp;gt; &amp;lt;parent&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-starter-parent&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.5.21.RELEASE&amp;lt;/version&amp;gt; &amp;lt;/parent&amp;gt;  13.2.1 Inheriting the starter parent
+ import 示例
+&amp;lt;dependencyManagement&amp;gt; &amp;lt;dependencies&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;!-- Import dependency management from Spring Boot --&amp;gt; &amp;lt;groupId&amp;gt;org.springframework.boot&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;spring-boot-dependencies&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;1.5.21.RELEASE&amp;lt;/version&amp;gt; &amp;lt;type&amp;gt;pom&amp;lt;/type&amp;gt; &amp;lt;scope&amp;gt;import&amp;lt;/scope&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;/dependencies&amp;gt; &amp;lt;/dependencyManagement&amp;gt;  13.2.2 Using Spring Boot without the parent POM
+ 区别  相同点  实现复用 统一管理依赖的版本   parent  优点  定义默认依赖 定义默认行为   缺点  单继承     import  优点  多继承   缺点  只作用于 dependencyMannagement，导入 dependencyMannagement 不允许属性覆盖      Read More  Introduction to the Dependency Mechanism 《Maven官方文档》-Maven依赖机制简介  </description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://hello-world-example.github.io/Maven/docs/FAQ/SNAPSHOT-U/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hello-world-example.github.io/Maven/docs/FAQ/SNAPSHOT-U/</guid>
+      <description>SNAPSHOT 更新策略 强制更新 SNAPSHOP 的几种方式 -U 参数 mvn clean compile -U pom.xml 配置 &amp;lt;repositories&amp;gt; &amp;lt;repository&amp;gt; &amp;lt;id&amp;gt;xxx&amp;lt;/id&amp;gt; &amp;lt;url&amp;gt;xxx&amp;lt;/url&amp;gt; &amp;lt;snapshots&amp;gt; &amp;lt;updatePolicy&amp;gt;always&amp;lt;/updatePolicy&amp;gt; &amp;lt;/snapshots&amp;gt; &amp;lt;/repository&amp;gt; &amp;lt;/repositories&amp;gt; 可选的测略
+ &amp;ldquo;always&amp;rdquo; &amp;ldquo;daily&amp;rdquo; (default) &amp;ldquo;interval:XXX&amp;rdquo; (in minutes) &amp;ldquo;never&amp;rdquo; (only if it doesn&amp;rsquo;t exist locally).   参见 Maven 官方文档 Repositories
+ settings.xml 配置  参见 Maven 官方文档 Settings 文件配置格式
+ Read More  Maven updatePolicy vs -U How does the updatePolicy in maven really work?  </description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://hello-world-example.github.io/Maven/docs/Nexus/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hello-world-example.github.io/Maven/docs/Nexus/</guid>
+      <description>Nexus 私服 Docker 安装 nexus3 $ docker pull sonatype/nexus3 # 5000 镜像仓库的服务端口 # 8081 nexus的服务端口 # 默认账号密码为admin/admin123 $ docker run -d --name nexus --restart=always -p 5000:5000 -p 8081:8081 sonatype/nexus3 三种仓库类型  hosted : 本地存储 proxy : 代理其他仓库 group : 组合多个仓库为一个地址  pom - distributionManagement &amp;lt;distributionManagement&amp;gt; &amp;lt;repository&amp;gt; &amp;lt;id&amp;gt;MyNexusPublic&amp;lt;/id&amp;gt; &amp;lt;url&amp;gt;http://localhost:8081/repository/maven-releases/&amp;lt;/url&amp;gt; &amp;lt;/repository&amp;gt; &amp;lt;snapshotRepository&amp;gt; &amp;lt;id&amp;gt;MyNexusSnapshot&amp;lt;/id&amp;gt; &amp;lt;url&amp;gt;http://localhost:8081/repository/maven-snapshots/&amp;lt;/url&amp;gt; &amp;lt;/snapshotRepository&amp;gt; &amp;lt;/distributionManagement&amp;gt; ​
+settings - servers 设置发布私服时的密码
+&amp;lt;servers&amp;gt; &amp;lt;server&amp;gt; &amp;lt;id&amp;gt;MyNexusPublic&amp;lt;/id&amp;gt; &amp;lt;username&amp;gt;admin&amp;lt;/username&amp;gt; &amp;lt;password&amp;gt;admin123&amp;lt;/password&amp;gt; &amp;lt;/server&amp;gt; &amp;lt;server&amp;gt; &amp;lt;id&amp;gt;MyNexusSnapshot&amp;lt;/id&amp;gt; &amp;lt;username&amp;gt;admin&amp;lt;/username&amp;gt; &amp;lt;password&amp;gt;admin123&amp;lt;/password&amp;gt; &amp;lt;/server&amp;gt; &amp;lt;/servers&amp;gt; Read More  Maven2部署构件到Nexus时出现的Failed to transfer file错误 docker部署Nexus  </description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://hello-world-example.github.io/Maven/docs/plugins/maven-assembly-plugin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hello-world-example.github.io/Maven/docs/plugins/maven-assembly-plugin/</guid>
+      <description>maven-assembly-plugin 默认的Descriptor摆放位置 my-assembly-descriptor +-- src | `-- main | `-- resources | `-- assemblies | `-- pack-assembly.xml `-- pom.xml  Sharing Assembly Descriptors
+ 内置的Assembly Descriptor 默认情况下，maven-assembly-plugin 内置了几个可以用的 assembly descriptor： bin、jar-with-dependencies、 project 、 src。
+这几个描述文件内容可以在 maven-assembly-plugin 的 jar 包里找到，
+maven-assembly-plugin-3.1.0.jar +-- assemblies | `-- bin.xml | `-- jar-with-dependencies.xml | `-- project.xml | `-- src.xml `-- META-INF `-- org.apache.maven.plugins.assembly 可参考 内置的 Descriptor，自定义的 Descriptor，放到正确的位置即可，descriptorRef 是自定义的文件名。
+示例 pom.xml &amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;org.apache.maven.plugins&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;maven-assembly-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.1.0&amp;lt;/version&amp;gt; &amp;lt;dependencies&amp;gt; &amp;lt;dependency&amp;gt; &amp;lt;groupId&amp;gt;${groupId}&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;${artifactId}&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;${version}&amp;lt;/version&amp;gt; &amp;lt;/dependency&amp;gt; &amp;lt;/dependencies&amp;gt; &amp;lt;executions&amp;gt; &amp;lt;execution&amp;gt; &amp;lt;phase&amp;gt;package&amp;lt;/phase&amp;gt; &amp;lt;goals&amp;gt; &amp;lt;goal&amp;gt;single&amp;lt;/goal&amp;gt; &amp;lt;/goals&amp;gt; &amp;lt;configuration&amp;gt; &amp;lt;descriptorRefs&amp;gt; &amp;lt;!</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://hello-world-example.github.io/Maven/docs/plugins/maven-dependency-plugin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hello-world-example.github.io/Maven/docs/plugins/maven-dependency-plugin/</guid>
+      <description>maven-dependency-plugin 将依赖的jar包拷贝到 lib 目录下面 &amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;org.apache.maven.plugins&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;maven-dependency-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;executions&amp;gt; &amp;lt;execution&amp;gt; &amp;lt;id&amp;gt;copy&amp;lt;/id&amp;gt; &amp;lt;phase&amp;gt;package&amp;lt;/phase&amp;gt; &amp;lt;goals&amp;gt; &amp;lt;goal&amp;gt;copy-dependencies&amp;lt;/goal&amp;gt; &amp;lt;/goals&amp;gt; &amp;lt;configuration&amp;gt; &amp;lt;outputDirectory&amp;gt; &amp;lt;!--拷贝到构建目录的lib文件夹下 --&amp;gt; ${project.build.directory}/lib &amp;lt;/outputDirectory&amp;gt; &amp;lt;/configuration&amp;gt; &amp;lt;/execution&amp;gt; &amp;lt;/executions&amp;gt; &amp;lt;/plugin&amp;gt; 查看树形依赖 mvn dependency:tree 查看依赖列表 mvn dependency:list 其他   dependency:copy 用来拷贝某一个或多个特定文件到指定目录；
+  dependency:copy-dependencies 用来拷贝依赖的文件到指定目录；
+  dependency:unpack 与 copy 类似，但会解压文件；
+  dependency:unpack-dependencies 与 copy-dependencies 类似，但会解压文件；
+  Read More  Apache Maven Dependency Plugin 查看maven项目的依赖关系 mvn dependency:tree  </description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://hello-world-example.github.io/Maven/docs/plugins/maven-help-plugin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hello-world-example.github.io/Maven/docs/plugins/maven-help-plugin/</guid>
+      <description>maven-help-plugin Maven Help插件 可以用来查看构建目标的帮助文档。
+help:help $ mvn help:help The Maven Help plugin provides goals aimed at helping to make sense out of the build environment. It includes the ability to view the effective POM and settings files, after inheritance and active profiles have been applied, as well as a describe a particular plugin goal to give usage information. This plugin has 9 goals: help:active-profiles Displays a list of the profiles which are currently active for this build.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://hello-world-example.github.io/Maven/docs/plugins/maven-shade-plugin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hello-world-example.github.io/Maven/docs/plugins/maven-shade-plugin/</guid>
+      <description>maven-shade-plugin 该插件可以将一个项目的 所有文件和依赖，打到一个jar包中。 需要注意是，所有的 依赖项 及其配置 都会被拆解放置，依赖 jar 解压后，如果文件同名，可能会相互覆盖。
+&amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;org.apache.maven.plugins&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;maven-shade-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.1.0&amp;lt;/version&amp;gt; &amp;lt;executions&amp;gt; &amp;lt;execution&amp;gt; &amp;lt;phase&amp;gt;package&amp;lt;/phase&amp;gt; &amp;lt;goals&amp;gt; &amp;lt;goal&amp;gt;shade&amp;lt;/goal&amp;gt; &amp;lt;/goals&amp;gt; &amp;lt;configuration&amp;gt; &amp;lt;!-- 不生成 dependency-reduced-pom.xml 文件 --&amp;gt; &amp;lt;createDependencyReducedPom&amp;gt;false&amp;lt;/createDependencyReducedPom&amp;gt; &amp;lt;transformers&amp;gt; &amp;lt;transformer implementation=&amp;#34;org.apache.maven.plugins.shade.resource.ManifestResourceTransformer&amp;#34;&amp;gt; &amp;lt;manifestEntries&amp;gt; &amp;lt;!-- 指定Main 方法 --&amp;gt; &amp;lt;Main-Class&amp;gt;xyz.kail.demo.Main&amp;lt;/Main-Class&amp;gt; &amp;lt;!-- 自定义信息 --&amp;gt; &amp;lt;X-Compile-Source-JDK&amp;gt;1.7&amp;lt;/X-Compile-Source-JDK&amp;gt; &amp;lt;X-Compile-Target-JDK&amp;gt;1.7&amp;lt;/X-Compile-Target-JDK&amp;gt; &amp;lt;/manifestEntries&amp;gt; &amp;lt;/transformer&amp;gt; &amp;lt;/transformers&amp;gt; &amp;lt;/configuration&amp;gt; &amp;lt;/execution&amp;gt; &amp;lt;/executions&amp;gt; &amp;lt;/plugin&amp;gt; 查看帮助 mvn help:describe -Dplugin=shade -Ddetail=true -Dgoal=shade Read More  Executable JAR Selecting Contents for Uber JAR Apache Maven Shade Plugin  </description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://hello-world-example.github.io/Maven/docs/plugins/versions-maven-plugin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hello-world-example.github.io/Maven/docs/plugins/versions-maven-plugin/</guid>
+      <description>Versions Maven Plugin 当 Maven 下面的子模块比较多的时候，每次修改工程的版本号都是一件非常的痛苦的事情，因为子模块都引用了顶级父模块的pom，所以虽然在父模块中定义了工程的版本号，但每个子模块中要显示地指定父模块的版本号，否则无法找到父模块的pom。
+versions-maven-plugin 插件是一个可以自动修改项目版本号的工具，避免每次版本升级 都需要修改所有子模块的 parent 版本号。
+快速开始 # 也可以使用全名称 # mvn org.codehaus.mojo:versions-maven-plugin:set -DnewVersion=5.0.0-SNAPSHOT $ mvn versions:set -DnewVersion=5.0.0-SNAPSHOT # 执行成功后，所有子模块的 parent 版本已经修改，对原来的 pom 文件进行了备份 $ git status #&amp;gt; Changes not staged for commit: #&amp;gt; modified: example-client-simple/pom.xml #&amp;gt; modified: example-client/pom.xml #&amp;gt; modified: example-core/pom.xml #&amp;gt; modified: example-server/pom.xml #&amp;gt; modified: pom.xml #&amp;gt; #&amp;gt; Untracked files: #&amp;gt; example-client-simple/pom.xml.versionsBackup #&amp;gt; example-client/pom.xml.versionsBackup #&amp;gt; example-core/pom.xml.versionsBackup #&amp;gt; example-server/pom.xml.versionsBackup #&amp;gt; pom.xml.versionsBackup # 如果想要还原，可以执行 $ mvn versions:revert # 如果确认要使用新版本，可以提交本次版本变更，这时会删除 .</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://hello-world-example.github.io/Maven/docs/Reactor/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hello-world-example.github.io/Maven/docs/Reactor/</guid>
+      <description>反应堆（Reactor） 在多模块Maven项目中，反应堆（Reactor）是一个包含了所有需要构建模块的抽象概念。
+在默认情况下，Maven 会根据多模块配置构建所有的模块，Maven 还会根据模块间的依赖关系自动计算构建顺序，以确保被依赖的模块会先得以构建。值得一提的是，在这种情形下，Maven会将父模块看成是其子模块的依赖。
+一般来说，我们要么构建整个项目，要么构建单个模块，但是有些时候，我们会想要仅仅构建这个完整的反应堆中的某些模块，换句话说，我们会需要裁剪反应堆。
+参数 Maven提供了很多命令行选项让我们自定义反应堆，输入mvn -h可以看到这样一些选项：
+$ mvn -h usage: mvn [options] [&amp;lt;goal(s)&amp;gt;] [&amp;lt;phase(s)&amp;gt;] Options: -am,--also-make 处理选定模块所依赖的模块 -amd,--also-make-dependents 同时处理依赖选定模块的模块 -B,--batch-mode Run in non-interactive (batch) mode -b,--builder &amp;lt;arg&amp;gt; The id of the build strategy to use. -C,--strict-checksums Fail the build if checksums don&amp;#39;t match -c,--lax-checksums Warn if checksums don&amp;#39;t match -cpu,--check-plugin-updates Ineffective, only kept for backward compatibility -D,--define &amp;lt;arg&amp;gt; 定义系统属性 -e,--errors Produce execution error messages -emp,--encrypt-master-password &amp;lt;arg&amp;gt; Encrypt master security password -ep,--encrypt-password &amp;lt;arg&amp;gt; Encrypt server password -f,--file &amp;lt;arg&amp;gt; 指定POM文件（或者pom.</description>
+    </item>
+    
+  </channel>
+</rss>

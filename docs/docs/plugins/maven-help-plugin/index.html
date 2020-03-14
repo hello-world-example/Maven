@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Maven Help Plugin"><meta property="og:title" content="" />
+<meta property="og:description" content="maven-help-plugin Maven Help插件 可以用来查看构建目标的帮助文档。
+help:help $ mvn help:help The Maven Help plugin provides goals aimed at helping to make sense out of the build environment. It includes the ability to view the effective POM and settings files, after inheritance and active profiles have been applied, as well as a describe a particular plugin goal to give usage information. This plugin has 9 goals: help:active-profiles Displays a list of the profiles which are currently active for this build." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hello-world-example.github.io/Maven/docs/plugins/maven-help-plugin/" />
+<meta property="article:modified_time" content="2020-03-14T18:20:20+08:00" />
+<title>Maven Help Plugin | Maven</title>
+<link rel="icon" href="/Maven/favicon.png" type="image/x-icon">
+
+
+<link rel="stylesheet" href="/Maven/book.min.5ffea21f70a71b9e6059006c33cc74cf184e208cb9897c6b24840c9f4e0e385e.css" integrity="sha256-X/6iH3CnG55gWQBsM8x0zxhOIIy5iXxrJIQMn04OOF4=">
+
+
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body>
+  <input type="checkbox" class="hidden" id="menu-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/Maven"><span>Maven</span>
+  </a>
+</h2>
+
+
+
+
+
+
+  <ul>
+<li><a href="/Maven/docs/Nexus/">Nexus 私服</a></li>
+<li><a href="/Maven/docs/Custom-Plugin/">编写 Maven 插件</a></li>
+<li><a href="/Maven/docs/Reactor/">反应堆</a></li>
+<li><strong>FAQ</strong>
+<ul>
+<li><a href="/Maven/docs/FAQ/SNAPSHOT-U/">SNAPSHOT 更新策略</a></li>
+<li><a href="/Maven/docs/FAQ/Parent-vs-Import/">parent 和 import 的区别</a></li>
+</ul>
+</li>
+<li><strong>官方插件</strong>
+<ul>
+<li><a href="/Maven/docs/plugins/maven-help-plugin/"class=active>maven-help-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-dependency-plugin/">maven-dependency-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-shade-plugin/">maven-shade-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-assembly-plugin/">maven-assembly-plugin</a></li>
+</ul>
+</li>
+<li><strong>第三方插件</strong>
+<ul>
+<li><a href="/Maven/docs/plugins/versions-maven-plugin/">versions-maven-plugin</a></li>
+</ul>
+</li>
+<li><strong>Action</strong>
+<ul>
+<li><a href="/Maven/docs/Action/Runnable-jar/">可运行 jar</a></li>
+</ul>
+</li>
+</ul>
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/Maven/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Maven Help Plugin</strong>
+
+  <label for="toc-control">
+    <img src="/Maven/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+  </label>
+</div>
+
+
+  
+    <input type="checkbox" class="hidden" id="toc-control" />
+    <aside class="hidden clearfix">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#helphelp">help:help</a></li>
+    <li><a href="#helpdescribe">help:describe</a>
+      <ul>
+        <li><a href="#显示maven插件的目标列表">显示Maven插件的目标列表</a></li>
+        <li><a href="#显示详细信息">显示详细信息</a></li>
+      </ul>
+    </li>
+    <li><a href="#显示某个目标的详细属性信息">显示某个目标的详细属性信息：</a></li>
+    <li><a href="#helpactive-profiles">help:active-profiles</a></li>
+    <li><a href="#helpall-profiles">help:all-profiles</a></li>
+    <li><a href="#helpeffective-pom">help:effective-pom</a></li>
+    <li><a href="#helpeffective-settings">help:effective-settings</a></li>
+    <li><a href="#helpevaluate">help:evaluate</a></li>
+    <li><a href="#helpexpressions">help:expressions</a></li>
+    <li><a href="#helpsystem">help:system</a></li>
+  </ul>
+</nav>
+
+
+    </aside>
+  
+ 
+      </header>
+
+      
+<article class="markdown"><h1 id="maven-help-plugin">maven-help-plugin</h1>
+<p>Maven Help插件 可以用来查看构建目标的帮助文档。</p>
+<h2 id="helphelp">help:help</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">$ mvn help:help
+
+The Maven Help plugin provides goals aimed at helping to make sense out of the
+build environment. It includes the ability to view the effective POM and
+settings files, after inheritance and active profiles have been applied, as
+well as a describe a particular plugin goal to give usage information.
+
+This plugin has 9 goals:
+
+help:active-profiles
+  Displays a list of the profiles which are currently active for this build.
+
+help:all-profiles
+  Displays a list of available profiles under the current project.
+  Note: it will list all profiles for a project. If a profile comes up with a
+  status inactive then there might be a need to set profile activation
+  switches/property.
+
+help:describe
+  Displays a list of the attributes for a Maven Plugin and/or goals (aka Mojo -
+  Maven plain Old Java Object).
+
+help:effective-pom
+  Displays the effective POM as an XML for this build, with the active profiles
+  factored in.
+
+help:effective-settings
+  Displays the calculated settings as XML for this project, given any profile
+  enhancement and the inheritance of the global settings into the user-level
+  settings.
+
+help:evaluate
+  Evaluates Maven expressions given by the user in an interactive mode.
+
+help:expressions
+  Displays the supported Plugin expressions used by Maven.
+
+help:help
+  Display help information on maven-help-plugin.
+  Call mvn help:help -Ddetail=true -Dgoal=&lt;goal-name&gt; to display parameter
+  details.
+
+help:system
+  Displays a list of the platform details like system properties and environment
+  variables.
+</code></pre></div><p>显示目标的详细参数信息</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">$ mvn help:help -Ddetail=true -Dgoal=&lt;goal-name&gt;
+</code></pre></div><h2 id="helpdescribe">help:describe</h2>
+<h3 id="显示maven插件的目标列表">显示Maven插件的目标列表</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text"># 如果是官方插件，可以执行用 缩略名
+mvn help:describe -Dplugin=dependency
+
+# 也可以用完全限定名
+mvn help:describe -Dplugin=org.apache.maven.plugins:maven-dependency-plugin
+# 或
+mvn help:describe -Dplugin=org.apache.maven.plugins:maven-dependency-plugin:3.0.2
+</code></pre></div><h3 id="显示详细信息">显示详细信息</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">mvn help:describe -Dplugin=dependency -Ddetail=true
+</code></pre></div><h2 id="显示某个目标的详细属性信息">显示某个目标的详细属性信息：</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">mvn help:describe -Dplugin=dependency -Ddetail=true -Dgoal=tree
+</code></pre></div><h2 id="helpactive-profiles">help:active-profiles</h2>
+<p>显示可用的 profiles</p>
+<h2 id="helpall-profiles">help:all-profiles</h2>
+<p>显示所有可用的 profiles 列表。如果某个profile 文件的状态为非活动状态，则可能需要设置profile文件激活开关/属性。</p>
+<h2 id="helpeffective-pom">help:effective-pom</h2>
+<p>显示最终生效的pom xml，并将激活的 profile 也考虑在内。</p>
+<h2 id="helpeffective-settings">help:effective-settings</h2>
+<p>最终生效的 settings 文件设置</p>
+<h2 id="helpevaluate">help:evaluate</h2>
+<p>以交互模式评估用户给出的Maven表达式。</p>
+<h2 id="helpexpressions">help:expressions</h2>
+<p>显示Maven使用的受支持的插件表达式。</p>
+<h2 id="helpsystem">help:system</h2>
+<p>显示系统属性和环境变量等平台详细信息列表。</p>
+</article>
+ 
+
+      <footer class="book-footer">
+        
+  <div class="flex justify-between">
+
+
+
+  <div>
+    
+    <a class="flex align-center" href="https://github.com/hello-world-example/Maven/commit/ac13c534f695dffc041da20a0b55c971d48df91a" title='Last modified by 杨凯彬 | Mar 14, 2020' target="_blank" rel="noopener">
+      <img src="/Maven/svg/calendar.svg" class="book-icon" alt="Calendar" />
+      <span>Mar 14, 2020</span>
+    </a>
+  </div>
+
+
+
+  <div>
+    <a class="flex align-center" href="https://github.com/hello-world-example/Maven/edit/master/HuGo/content/docs/plugins/maven-help-plugin.md" target="_blank" rel="noopener">
+      <img src="/Maven/svg/edit.svg" class="book-icon" alt="Edit" />
+      <span>Edit this page</span>
+    </a>
+  </div>
+
+</div>
+
+ 
+        
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      </footer>
+      
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#helphelp">help:help</a></li>
+    <li><a href="#helpdescribe">help:describe</a>
+      <ul>
+        <li><a href="#显示maven插件的目标列表">显示Maven插件的目标列表</a></li>
+        <li><a href="#显示详细信息">显示详细信息</a></li>
+      </ul>
+    </li>
+    <li><a href="#显示某个目标的详细属性信息">显示某个目标的详细属性信息：</a></li>
+    <li><a href="#helpactive-profiles">help:active-profiles</a></li>
+    <li><a href="#helpall-profiles">help:all-profiles</a></li>
+    <li><a href="#helpeffective-pom">help:effective-pom</a></li>
+    <li><a href="#helpeffective-settings">help:effective-settings</a></li>
+    <li><a href="#helpevaluate">help:evaluate</a></li>
+    <li><a href="#helpexpressions">help:expressions</a></li>
+    <li><a href="#helpsystem">help:system</a></li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
