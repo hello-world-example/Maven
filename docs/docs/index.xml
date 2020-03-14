@@ -22,6 +22,19 @@
     
     <item>
       <title></title>
+      <link>https://hello-world-example.github.io/Maven/docs/Action/Troubleshooting/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hello-world-example.github.io/Maven/docs/Action/Troubleshooting/</guid>
+      <description>常见故障排查 确认环境 首先确认 Maven 安装是否正常，很多问题跟自身环境有关。
+确认 mvn 命令是否可正常使用，可通过 mvn -v 确认，输出信息可以看出
+ 版本 安装路径 JDK 版本 和 位置 &amp;hellip;  ~ ᐅ mvn -v Apache Maven 3.3.9 (bb52d8502b132ec0a5a3f4c09453c07478323dc5; 2015-11-11T00:41:47+08:00) Maven home: /Users/kail/java/apache-maven-3.3.9 Java version: 1.8.0_151, vendor: Oracle Corporation Java home: /Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/jre ... 如果 mvn 命令不正常，请先确保 Maven 安装正常，Maven 的安装很简单，只需两步
+ 从 http://maven.apache.org/download.cgi 下载任意格式压缩包（不带 src 的），解压到任意目录 配置 JAVA_HOME 和 M2_HOME 环境变量即可，配置的值详见 上面 mvn -v 的输出  注意：一般对于开发人员来说，建议都保持默认配置即可，无需再进行额外的配置，如：
+ 无需 设置本地仓库位置到非系统盘，现在已经不是资源紧张的年代，几个 G 的空间还是有的，为这点空间浪费时间不值得 无需 把 settings.</description>
+    </item>
+    
+    <item>
+      <title></title>
       <link>https://hello-world-example.github.io/Maven/docs/Custom-Plugin/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       

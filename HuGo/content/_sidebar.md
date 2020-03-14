@@ -17,3 +17,4 @@ headless: true
     * [versions-maven-plugin]({{< relref "/docs/plugins/versions-maven-plugin.md" >}})
 * **Action**
     * [可运行 jar]({{< relref "/docs/Action/Runnable-jar.md" >}})
+    * [常见故障排查]({{< relref "/docs/Action/Troubleshooting" >}})

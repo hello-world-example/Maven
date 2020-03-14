@@ -15,7 +15,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://hello-world-example.github.io/Maven/_sidebar/</guid>
-      <description> Nexus 私服 编写 Maven 插件 反应堆 FAQ  SNAPSHOT 更新策略 parent 和 import 的区别   官方插件  maven-help-plugin maven-dependency-plugin maven-shade-plugin maven-assembly-plugin   第三方插件  versions-maven-plugin   Action  可运行 jar    </description>
+      <description> Nexus 私服 编写 Maven 插件 反应堆 FAQ  SNAPSHOT 更新策略 parent 和 import 的区别   官方插件  maven-help-plugin maven-dependency-plugin maven-shade-plugin maven-assembly-plugin   第三方插件  versions-maven-plugin   Action  可运行 jar 常见故障排查    </description>
     </item>
     
     <item>
@@ -27,6 +27,19 @@
       <description>可运行 jar 方式一 目录结构
  target  MainApp.jar config/ lib/    所用插件
 &amp;lt;plugins&amp;gt; &amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;org.apache.maven.plugins&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;maven-jar-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.1.2&amp;lt;/version&amp;gt; &amp;lt;configuration&amp;gt; &amp;lt;archive&amp;gt; &amp;lt;manifest&amp;gt; &amp;lt;addClasspath&amp;gt;true&amp;lt;/addClasspath&amp;gt; &amp;lt;mainClass&amp;gt;xxx.MainApp&amp;lt;/mainClass&amp;gt; &amp;lt;classpathPrefix&amp;gt;lib/&amp;lt;/classpathPrefix&amp;gt; &amp;lt;!-- SNAPSHOT 版本 Class-Path 是 XXX-x.y.z-SNAPSHOT.jar --&amp;gt; &amp;lt;!-- 而不是 XXX-x.y.z-20190517.110547-4.jar --&amp;gt; &amp;lt;!-- 避免 Class-Path 与实际文件名不一致，找不到类 --&amp;gt; &amp;lt;useUniqueVersions&amp;gt;false&amp;lt;/useUniqueVersions&amp;gt; &amp;lt;/manifest&amp;gt; &amp;lt;!-- META-INF 文档属性 --&amp;gt; &amp;lt;manifestEntries&amp;gt; &amp;lt;Rose&amp;gt;*&amp;lt;/Rose&amp;gt; &amp;lt;!-- 将 config目录也加入到 classPath 下 --&amp;gt; &amp;lt;Class-Path&amp;gt;config/&amp;lt;/Class-Path&amp;gt; &amp;lt;/manifestEntries&amp;gt; &amp;lt;/archive&amp;gt; &amp;lt;excludes&amp;gt; &amp;lt;!-- 不打到 jar 包里面的文件 --&amp;gt; &amp;lt;exclude&amp;gt;config.properties&amp;lt;/exclude&amp;gt; &amp;lt;/excludes&amp;gt; &amp;lt;/configuration&amp;gt; &amp;lt;/plugin&amp;gt; &amp;lt;plugin&amp;gt; &amp;lt;groupId&amp;gt;org.apache.maven.plugins&amp;lt;/groupId&amp;gt; &amp;lt;artifactId&amp;gt;maven-resources-plugin&amp;lt;/artifactId&amp;gt; &amp;lt;version&amp;gt;3.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://hello-world-example.github.io/Maven/docs/Action/Troubleshooting/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://hello-world-example.github.io/Maven/docs/Action/Troubleshooting/</guid>
+      <description>常见故障排查 确认环境 首先确认 Maven 安装是否正常，很多问题跟自身环境有关。
+确认 mvn 命令是否可正常使用，可通过 mvn -v 确认，输出信息可以看出
+ 版本 安装路径 JDK 版本 和 位置 &amp;hellip;  ~ ᐅ mvn -v Apache Maven 3.3.9 (bb52d8502b132ec0a5a3f4c09453c07478323dc5; 2015-11-11T00:41:47+08:00) Maven home: /Users/kail/java/apache-maven-3.3.9 Java version: 1.8.0_151, vendor: Oracle Corporation Java home: /Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/jre ... 如果 mvn 命令不正常，请先确保 Maven 安装正常，Maven 的安装很简单，只需两步
+ 从 http://maven.apache.org/download.cgi 下载任意格式压缩包（不带 src 的），解压到任意目录 配置 JAVA_HOME 和 M2_HOME 环境变量即可，配置的值详见 上面 mvn -v 的输出  注意：一般对于开发人员来说，建议都保持默认配置即可，无需再进行额外的配置，如：
+ 无需 设置本地仓库位置到非系统盘，现在已经不是资源紧张的年代，几个 G 的空间还是有的，为这点空间浪费时间不值得 无需 把 settings.</description>
     </item>
     
     <item>

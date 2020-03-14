@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Troubleshooting"><meta property="og:title" content="" />
+<meta property="og:description" content="常见故障排查 确认环境 首先确认 Maven 安装是否正常，很多问题跟自身环境有关。
+确认 mvn 命令是否可正常使用，可通过 mvn -v 确认，输出信息可以看出
+ 版本 安装路径 JDK 版本 和 位置 &hellip;  ~ ᐅ mvn -v Apache Maven 3.3.9 (bb52d8502b132ec0a5a3f4c09453c07478323dc5; 2015-11-11T00:41:47&#43;08:00) Maven home: /Users/kail/java/apache-maven-3.3.9 Java version: 1.8.0_151, vendor: Oracle Corporation Java home: /Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/jre ... 如果 mvn 命令不正常，请先确保 Maven 安装正常，Maven 的安装很简单，只需两步
+ 从 http://maven.apache.org/download.cgi 下载任意格式压缩包（不带 src 的），解压到任意目录 配置 JAVA_HOME 和 M2_HOME 环境变量即可，配置的值详见 上面 mvn -v 的输出  注意：一般对于开发人员来说，建议都保持默认配置即可，无需再进行额外的配置，如：
+ 无需 设置本地仓库位置到非系统盘，现在已经不是资源紧张的年代，几个 G 的空间还是有的，为这点空间浪费时间不值得 无需 把 settings." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://hello-world-example.github.io/Maven/docs/Action/Troubleshooting/" />
+
+<title>Troubleshooting | Maven</title>
+<link rel="icon" href="/Maven/favicon.png" type="image/x-icon">
+
+
+<link rel="stylesheet" href="/Maven/book.min.5ffea21f70a71b9e6059006c33cc74cf184e208cb9897c6b24840c9f4e0e385e.css" integrity="sha256-X/6iH3CnG55gWQBsM8x0zxhOIIy5iXxrJIQMn04OOF4=">
+
+
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body>
+  <input type="checkbox" class="hidden" id="menu-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
+<h2 class="book-brand">
+  <a href="/Maven"><span>Maven</span>
+  </a>
+</h2>
+
+
+
+
+
+
+  <ul>
+<li><a href="/Maven/docs/Nexus/">Nexus 私服</a></li>
+<li><a href="/Maven/docs/Custom-Plugin/">编写 Maven 插件</a></li>
+<li><a href="/Maven/docs/Reactor/">反应堆</a></li>
+<li><strong>FAQ</strong>
+<ul>
+<li><a href="/Maven/docs/FAQ/SNAPSHOT-U/">SNAPSHOT 更新策略</a></li>
+<li><a href="/Maven/docs/FAQ/Parent-vs-Import/">parent 和 import 的区别</a></li>
+</ul>
+</li>
+<li><strong>官方插件</strong>
+<ul>
+<li><a href="/Maven/docs/plugins/maven-help-plugin/">maven-help-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-dependency-plugin/">maven-dependency-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-shade-plugin/">maven-shade-plugin</a></li>
+<li><a href="/Maven/docs/plugins/maven-assembly-plugin/">maven-assembly-plugin</a></li>
+</ul>
+</li>
+<li><strong>第三方插件</strong>
+<ul>
+<li><a href="/Maven/docs/plugins/versions-maven-plugin/">versions-maven-plugin</a></li>
+</ul>
+</li>
+<li><strong>Action</strong>
+<ul>
+<li><a href="/Maven/docs/Action/Runnable-jar/">可运行 jar</a></li>
+<li><a href="/Maven/docs/Action/Troubleshooting/"class=active>常见故障排查</a></li>
+</ul>
+</li>
+</ul>
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/Maven/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Troubleshooting</strong>
+
+  <label for="toc-control">
+    <img src="/Maven/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+  </label>
+</div>
+
+
+  
+    <input type="checkbox" class="hidden" id="toc-control" />
+    <aside class="hidden clearfix">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#确认环境">确认环境</a></li>
+    <li><a href="#确认配置">确认配置</a>
+      <ul>
+        <li><a href="#生效的设置">生效的设置</a></li>
+        <li><a href="#生效的-pom">生效的 pom</a></li>
+        <li><a href="#生效的-profile">生效的 Profile</a></li>
+        <li><a href="#其他">其他</a></li>
+      </ul>
+    </li>
+    <li><a href="#依赖问题">依赖问题</a></li>
+    <li><a href="#关注-scope">关注 scope</a></li>
+    <li><a href="#jar-包内容不一致">jar 包内容不一致</a></li>
+    <li><a href="#编译错误">编译错误</a></li>
+    <li><a href="#更新中">更新中&hellip;</a></li>
+    <li><a href="#小结">小结</a></li>
+  </ul>
+</nav>
+
+
+    </aside>
+  
+ 
+      </header>
+
+      
+<article class="markdown"><h1 id="常见故障排查">常见故障排查</h1>
+<h2 id="确认环境">确认环境</h2>
+<p>首先确认 Maven 安装是否正常，很多问题跟自身环境有关。</p>
+<p>确认 <code>mvn</code> 命令是否可正常使用，可通过 <code>mvn -v</code> 确认，输出信息可以看出</p>
+<ul>
+<li>版本</li>
+<li>安装路径</li>
+<li>JDK 版本 和 位置</li>
+<li>&hellip;</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~ ᐅ mvn -v
+Apache Maven 3.3.9 <span style="color:#f92672">(</span>bb52d8502b132ec0a5a3f4c09453c07478323dc5; 2015-11-11T00:41:47+08:00<span style="color:#f92672">)</span>
+Maven home: /Users/kail/java/apache-maven-3.3.9
+Java version: 1.8.0_151, vendor: Oracle Corporation
+Java home: /Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/jre
+...
+</code></pre></div><p>如果 <code>mvn</code> 命令不正常，请先确保 Maven 安装正常，Maven 的安装很简单，只需两步</p>
+<ul>
+<li>从 <a href="http://maven.apache.org/download.cgi">http://maven.apache.org/download.cgi</a> 下载任意格式压缩包（不带 src 的），解压到任意目录</li>
+<li>配置 <code>JAVA_HOME</code> 和 <code>M2_HOME</code> 环境变量即可，配置的值详见 上面 <code>mvn -v</code> 的输出</li>
+</ul>
+<p><strong>注意</strong>：一般对于开发人员来说，建议都保持默认配置即可，<strong>无需</strong>再进行额外的配置，如：</p>
+<ul>
+<li><strong>无需</strong> 设置本地仓库位置到非系统盘，现在已经不是资源紧张的年代，几个 G 的空间还是有的，为这点空间浪费时间不值得</li>
+<li><strong>无需</strong> 把 <code>settings.xml</code> 复制到本地仓库的根目录
+<ul>
+<li>一是 开发的时候，基本没有<strong>用户级别设置</strong>覆盖<strong>系统级别设置</strong>的场景</li>
+<li>二是容易搞混， <code>settings.xml</code> 文件寻址不是先从本地仓库下找的，而是 <code>${user.home}/.m2/settings.xml</code>，如果没有找到，则是 <code>${maven.home}/conf/settings.xml</code>。有些人已经把仓库位置改了， <code>settings.xml</code> 文件也跟着仓库走，修改实际上是没有效果的</li>
+</ul>
+</li>
+<li><strong>无需</strong> 额外的自定配置，使用 IDE 的时候又得设置 IDE，有些人 IDE 和 使用安装的还不统一，<strong>不如全都使用默认配置省事</strong></li>
+<li>settings.xml 的远程仓库也不用配置，仓库跟着项目走即可</li>
+<li>镜像也不用配置</li>
+</ul>
+<h2 id="确认配置">确认配置</h2>
+<h3 id="生效的设置">生效的设置</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml">~ ᐅ mvn help:effective-settings                              
+...
+<span style="color:#f92672">&lt;settings</span> <span style="color:#960050;background-color:#1e0010">...</span><span style="color:#f92672">&gt;</span>
+  <span style="color:#f92672">&lt;localRepository&gt;</span>/Users/kail/.m2/repository<span style="color:#f92672">&lt;/localRepository&gt;</span>
+ ...
+<span style="color:#f92672">&lt;/settings&gt;</span>
+...
+</code></pre></div><h3 id="生效的-pom">生效的 pom</h3>
+<p>实际的输出会比实例 pom 多很多，关注重点即可，如 <strong>依赖</strong>、<strong>仓库</strong>、<strong>插件</strong>、<strong>编码</strong> 等</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">~ ᐅ mvn help:effective-pom
+</code></pre></div><h3 id="生效的-profile">生效的 Profile</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 所有支持的 Profile</span>
+~ ᐅ mvn help:all-profiles 
+
+<span style="color:#75715e"># 激活的 Profile（ -P 激活 ）</span>
+~ ᐅ mvn help:active-profiles
+</code></pre></div><h3 id="其他">其他</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 查看 maven-help-plugin 支持的 goals</span>
+~ ᐅ mvn help:help
+</code></pre></div><blockquote>
+<p>详见 <a href="/Maven/docs/plugins/maven-help-plugin/">maven-help-plugin</a></p>
+</blockquote>
+<h2 id="依赖问题">依赖问题</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 查看依赖列表</span>
+~ ᐅ mvn dependency:list
+
+<span style="color:#75715e"># 树形依赖关系</span>
+~ ᐅ mvn dependency:tree 
+<span style="color:#75715e"># 查看指定模块</span>
+~ ᐅ mvn dependency:tree -pl 模块名
+<span style="color:#75715e"># 详细信息</span>
+~ ᐅ mvn dependency:tree -pl 模块名 -Dverbose
+
+<span style="color:#75715e"># 查看 dependency 插件的其他 goals</span>
+~ ᐅ mvn help:describe -Dplugin<span style="color:#f92672">=</span>org.apache.maven.plugins:maven-dependency-plugin
+</code></pre></div><p>如果依赖的 jar 所在的 pom 有 parent ，会先下载 parent pom。</p>
+<p>查看依赖主要有以下几个作用</p>
+<ul>
+<li>了解有哪些<strong>传递依赖</strong></li>
+<li>了解传递依赖的版本是否统一，是否冲突</li>
+<li>查看发布的模块打包后的依赖</li>
+</ul>
+<h2 id="关注-scope">关注 scope</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;dependency&gt;</span>
+  <span style="color:#f92672">&lt;groupId&gt;</span>x.x.x<span style="color:#f92672">&lt;/groupId&gt;</span>
+  <span style="color:#f92672">&lt;artifactId&gt;</span>xx-xx-xx<span style="color:#f92672">&lt;/artifactId&gt;</span>
+  <span style="color:#f92672">&lt;version&gt;</span>x.x.x<span style="color:#f92672">&lt;/version&gt;</span>
+  <span style="color:#75715e">&lt;!-- 关注这里 --&gt;</span>
+  <span style="color:#f92672">&lt;scope&gt;</span>provided<span style="color:#f92672">&lt;/scope&gt;</span>
+<span style="color:#f92672">&lt;/dependency&gt;</span>
+</code></pre></div><p>因为编码习惯，可能很多人不太关注传递依赖，但是当 jar 包是提供给别人的时候，scope 就要重点关注，否则会给他人困扰，如：<strong>jar 包冲突</strong>、<strong>无用的传递</strong> 等</p>
+<ul>
+<li>compile : 默认，会被传递依赖</li>
+<li><strong><code>provided</code></strong> :  <strong>重点关注</strong>，提供非他人的依赖，需要权衡使用 <code>provided</code>，避免可能造成困扰的传递依赖</li>
+<li>test : 参与测试</li>
+<li>runtime :  不参与打包，运行时用到</li>
+<li>system :  配合 <code>systemPath</code>，不从仓库哪，使用指定的本地文件</li>
+</ul>
+<h2 id="jar-包内容不一致">jar 包内容不一致</h2>
+<ul>
+<li>先查看  jar 包是否是正式版
+<ul>
+<li>正式版：只能删除本地仓库</li>
+<li>快照版：尝试使用 <code>-U</code> 参数 <code>mvn xxx -U</code>，详见 <a href="/Maven/docs/FAQ/SNAPSHOT-U/">SNAPSHOT 更新策略</a></li>
+</ul>
+</li>
+<li>养成只要内容变动就修改版本号的习惯，会避免上面的问题</li>
+<li>通过 <code>mvn versions:set</code> 来统一修改版本，减少漏的可能</li>
+<li>&hellip;</li>
+</ul>
+<h2 id="编译错误">编译错误</h2>
+<ul>
+<li>如果提示信息不够，使用 <code>-X</code> 参数查看详细错误信息</li>
+<li></li>
+</ul>
+<h2 id="更新中">更新中&hellip;</h2>
+<ul>
+<li>..</li>
+</ul>
+<h2 id="小结">小结</h2>
+<ul>
+<li>确认环境问题，排除配置错误导致的问题</li>
+<li>不要完全依赖 IDE 对 Maven 的集成，适当使用 Maven 原生命令，减少 IDE 自身的问题带来的误区</li>
+<li>了解添加 Maven 依赖的作用，以及都有哪些传递依赖</li>
+</ul>
+</article>
+ 
+
+      <footer class="book-footer">
+        
+  <div class="flex justify-between">
+
+
+
+
+
+  <div>
+    <a class="flex align-center" href="https://github.com/hello-world-example/Maven/edit/master/HuGo/content/docs/Action/Troubleshooting.md" target="_blank" rel="noopener">
+      <img src="/Maven/svg/edit.svg" class="book-icon" alt="Edit" />
+      <span>Edit this page</span>
+    </a>
+  </div>
+
+</div>
+
+ 
+        
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+      </footer>
+      
+    </div>
+
+    
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#确认环境">确认环境</a></li>
+    <li><a href="#确认配置">确认配置</a>
+      <ul>
+        <li><a href="#生效的设置">生效的设置</a></li>
+        <li><a href="#生效的-pom">生效的 pom</a></li>
+        <li><a href="#生效的-profile">生效的 Profile</a></li>
+        <li><a href="#其他">其他</a></li>
+      </ul>
+    </li>
+    <li><a href="#依赖问题">依赖问题</a></li>
+    <li><a href="#关注-scope">关注 scope</a></li>
+    <li><a href="#jar-包内容不一致">jar 包内容不一致</a></li>
+    <li><a href="#编译错误">编译错误</a></li>
+    <li><a href="#更新中">更新中&hellip;</a></li>
+    <li><a href="#小结">小结</a></li>
+  </ul>
+</nav>
+
+ 
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
