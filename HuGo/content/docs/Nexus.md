@@ -1,4 +1,4 @@
-# nexus
+# Nexus 私服
 
 
 
@@ -13,11 +13,15 @@ $ docker pull sonatype/nexus3
 $ docker run -d --name nexus  --restart=always -p 5000:5000 -p 8081:8081 sonatype/nexus3
 ```
 
+
+
 ## 三种仓库类型
 
-- hosted : 本地存储
-- proxy : 代理其他仓库
-- group : 组合多个仓库为一个地址
+- `hosted` : 本地存储
+- `proxy` : 代理其他仓库
+- `group` : 组合多个仓库为一个地址
+
+
 
 ## pom - distributionManagement
 
@@ -40,6 +44,8 @@ $ docker run -d --name nexus  --restart=always -p 5000:5000 -p 8081:8081 sonatyp
 ​    
 
 ## settings - servers
+
+设置发布私服时的密码
 
 ```xml
 <servers>

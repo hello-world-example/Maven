@@ -6,23 +6,23 @@
 
 ``` xml
 <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-dependency-plugin</artifactId>
-    <executions>
-        <execution>
-            <id>copy</id>
-            <phase>package</phase>
-            <goals>
-                <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-                <outputDirectory>
-                    <!--拷贝到构建目录的lib文件夹下 -->
-                    ${project.build.directory}/lib
-                </outputDirectory>
-            </configuration>
-        </execution>
-    </executions>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-dependency-plugin</artifactId>
+  <executions>
+    <execution>
+      <id>copy</id>
+      <phase>package</phase>
+      <goals>
+        <goal>copy-dependencies</goal>
+      </goals>
+      <configuration>
+        <outputDirectory>
+          <!--拷贝到构建目录的lib文件夹下 -->
+          ${project.build.directory}/lib
+        </outputDirectory>
+      </configuration>
+    </execution>
+  </executions>
 </plugin>
 ```
 

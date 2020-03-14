@@ -16,13 +16,13 @@ mvn clean compile -U
 
 ```xml
 <repositories>
-    <repository>
-        <id>xxx</id>
-        <url>xxx</url>
-        <snapshots>
-            <updatePolicy>always</updatePolicy>
-        </snapshots>
-    </repository>
+  <repository>
+    <id>xxx</id>
+    <url>xxx</url>
+    <snapshots>
+      <updatePolicy>always</updatePolicy>
+    </snapshots>
+  </repository>
 </repositories>
 ```
 
