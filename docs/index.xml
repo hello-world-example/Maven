@@ -15,7 +15,7 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://hello-world-example.github.io/Maven/_sidebar/</guid>
-      <description> Nexus 私服 编写 Maven 插件 反应堆 FAQ  SNAPSHOT 更新策略 parent 和 import 的区别   官方插件  maven-help-plugin maven-dependency-plugin maven-shade-plugin maven-assembly-plugin   第三方插件  versions-maven-plugin   Action  可运行 jar 常见故障排查    </description>
+      <description> Nexus 私服 编写 Maven 插件 反应堆 FAQ  SNAPSHOT 更新策略 parent 和 import 的区别   官方插件  maven-help-plugin maven-dependency-plugin maven-shade-plugin maven-assembly-plugin   第三方插件  versions-maven-plugin docker-maven-plugin 🔗   Action  可运行 jar 常见故障排查    </description>
     </item>
     
     <item>

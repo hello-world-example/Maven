@@ -15,6 +15,7 @@ headless: true
     * [maven-assembly-plugin]({{< relref "/docs/plugins/maven-assembly-plugin.md" >}})
 * **第三方插件**
     * [versions-maven-plugin]({{< relref "/docs/plugins/versions-maven-plugin.md" >}})
+    * [docker-maven-plugin 🔗](/Docker/docs/Action/docker-maven-plugin/)
 * **Action**
     * [可运行 jar]({{< relref "/docs/Action/Runnable-jar.md" >}})
     * [常见故障排查]({{< relref "/docs/Action/Troubleshooting" >}})
