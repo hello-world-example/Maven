@@ -4,7 +4,10 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="S N a P S H O T U"><meta property="og:title" content="" />
+<meta name="description" content="SNAPSHOT 更新策略 强制更新 SNAPSHOP 的几种方式 -U 参数 mvn clean compile -U pom.xml 配置 &lt;repositories&gt; &lt;repository&gt; &lt;id&gt;xxx&lt;/id&gt; &lt;url&gt;xxx&lt;/url&gt; &lt;snapshots&gt; &lt;updatePolicy&gt;always&lt;/updatePolicy&gt; &lt;/snapshots&gt; &lt;/repository&gt; &lt;/repositories&gt; 可选的测略
+ &ldquo;always&rdquo; &ldquo;daily&rdquo; (default) &ldquo;interval:XXX&rdquo; (in minutes) &ldquo;never&rdquo; (only if it doesn&rsquo;t exist locally).   参见 Maven 官方文档 Repositories
+ settings.xml 配置  参见 Maven 官方文档 Settings 文件配置格式
+ Read More  Maven updatePolicy vs -U How does the updatePolicy in maven really work?  "><meta property="og:title" content="" />
 <meta property="og:description" content="SNAPSHOT 更新策略 强制更新 SNAPSHOP 的几种方式 -U 参数 mvn clean compile -U pom.xml 配置 &lt;repositories&gt; &lt;repository&gt; &lt;id&gt;xxx&lt;/id&gt; &lt;url&gt;xxx&lt;/url&gt; &lt;snapshots&gt; &lt;updatePolicy&gt;always&lt;/updatePolicy&gt; &lt;/snapshots&gt; &lt;/repository&gt; &lt;/repositories&gt; 可选的测略
  &ldquo;always&rdquo; &ldquo;daily&rdquo; (default) &ldquo;interval:XXX&rdquo; (in minutes) &ldquo;never&rdquo; (only if it doesn&rsquo;t exist locally).   参见 Maven 官方文档 Repositories
  settings.xml 配置  参见 Maven 官方文档 Settings 文件配置格式
@@ -16,7 +19,7 @@
 <link rel="icon" href="/Maven/favicon.png" type="image/x-icon">
 
 
-<link rel="stylesheet" href="/Maven/book.min.5ffea21f70a71b9e6059006c33cc74cf184e208cb9897c6b24840c9f4e0e385e.css" integrity="sha256-X/6iH3CnG55gWQBsM8x0zxhOIIy5iXxrJIQMn04OOF4=">
+<link rel="stylesheet" href="/Maven/book.min.d436f463c9471cfab26a8b71cd2f50b6abf5225806391453da4ca111d1834fef.css" integrity="sha256-1Db0Y8lHHPqyaotxzS9Qtqv1IlgGORRT2kyhEdGDT&#43;8=">
 
 
 <!--
@@ -37,6 +40,12 @@ https://github.com/alex-shpak/hugo-book
   <a href="/Maven"><span>Maven</span>
   </a>
 </h2>
+
+
+
+
+
+
 
 
 
@@ -73,6 +82,11 @@ https://github.com/alex-shpak/hugo-book
 </ul>
 </li>
 </ul>
+
+
+
+
+
 
 
 
@@ -129,7 +143,8 @@ https://github.com/alex-shpak/hugo-book
       </header>
 
       
-<article class="markdown"><h1 id="snapshot-更新策略">SNAPSHOT 更新策略</h1>
+      
+  <article class="markdown"><h1 id="snapshot-更新策略">SNAPSHOT 更新策略</h1>
 <h2 id="强制更新-snapshop-的几种方式">强制更新 SNAPSHOP 的几种方式</h2>
 <h3 id="-u-参数">-U 参数</h3>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mvn clean compile -U
@@ -164,6 +179,7 @@ https://github.com/alex-shpak/hugo-book
 </ul>
 </article>
  
+      
 
       <footer class="book-footer">
         
@@ -192,14 +208,29 @@ https://github.com/alex-shpak/hugo-book
 
  
         
+<script>
+var images = document.getElementsByTagName("img")
+console.info(images.length)
+for(var i=0; i<images.length; i++){
+  var image = images[i]
+  var src = image.getAttribute("src");
+  if(src.startsWith("-images")){
+    image.setAttribute("src", "../" + src)
+  }
+}
+</script>
+
+      </footer>
+
+      
   
   <div class="book-comments">
 
 </div>
   
  
-      </footer>
-      
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
     </div>
 
     

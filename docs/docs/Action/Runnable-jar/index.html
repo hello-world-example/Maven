@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Runnable Jar"><meta property="og:title" content="" />
+<meta name="description" content="可运行 jar 方式一 目录结构
+ target  MainApp.jar config/ lib/    所用插件
+&lt;plugins&gt; &lt;plugin&gt; &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt; &lt;artifactId&gt;maven-jar-plugin&lt;/artifactId&gt; &lt;version&gt;3.1.2&lt;/version&gt; &lt;configuration&gt; &lt;archive&gt; &lt;manifest&gt; &lt;addClasspath&gt;true&lt;/addClasspath&gt; &lt;mainClass&gt;xxx.MainApp&lt;/mainClass&gt; &lt;classpathPrefix&gt;lib/&lt;/classpathPrefix&gt; &lt;!-- SNAPSHOT 版本 Class-Path 是 XXX-x.y.z-SNAPSHOT.jar --&gt; &lt;!-- 而不是 XXX-x.y.z-20190517.110547-4.jar --&gt; &lt;!-- 避免 Class-Path 与实际文件名不一致，找不到类 --&gt; &lt;useUniqueVersions&gt;false&lt;/useUniqueVersions&gt; &lt;/manifest&gt; &lt;!-- META-INF 文档属性 --&gt; &lt;manifestEntries&gt; &lt;Rose&gt;*&lt;/Rose&gt; &lt;!-- 将 config目录也加入到 classPath 下 --&gt; &lt;Class-Path&gt;config/&lt;/Class-Path&gt; &lt;/manifestEntries&gt; &lt;/archive&gt; &lt;excludes&gt; &lt;!-- 不打到 jar 包里面的文件 --&gt; &lt;exclude&gt;config.properties&lt;/exclude&gt; &lt;/excludes&gt; &lt;/configuration&gt; &lt;/plugin&gt; &lt;plugin&gt; &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt; &lt;artifactId&gt;maven-resources-plugin&lt;/artifactId&gt; &lt;version&gt;3."><meta property="og:title" content="" />
 <meta property="og:description" content="可运行 jar 方式一 目录结构
  target  MainApp.jar config/ lib/    所用插件
 &lt;plugins&gt; &lt;plugin&gt; &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt; &lt;artifactId&gt;maven-jar-plugin&lt;/artifactId&gt; &lt;version&gt;3.1.2&lt;/version&gt; &lt;configuration&gt; &lt;archive&gt; &lt;manifest&gt; &lt;addClasspath&gt;true&lt;/addClasspath&gt; &lt;mainClass&gt;xxx.MainApp&lt;/mainClass&gt; &lt;classpathPrefix&gt;lib/&lt;/classpathPrefix&gt; &lt;!-- SNAPSHOT 版本 Class-Path 是 XXX-x.y.z-SNAPSHOT.jar --&gt; &lt;!-- 而不是 XXX-x.y.z-20190517.110547-4.jar --&gt; &lt;!-- 避免 Class-Path 与实际文件名不一致，找不到类 --&gt; &lt;useUniqueVersions&gt;false&lt;/useUniqueVersions&gt; &lt;/manifest&gt; &lt;!-- META-INF 文档属性 --&gt; &lt;manifestEntries&gt; &lt;Rose&gt;*&lt;/Rose&gt; &lt;!-- 将 config目录也加入到 classPath 下 --&gt; &lt;Class-Path&gt;config/&lt;/Class-Path&gt; &lt;/manifestEntries&gt; &lt;/archive&gt; &lt;excludes&gt; &lt;!-- 不打到 jar 包里面的文件 --&gt; &lt;exclude&gt;config.properties&lt;/exclude&gt; &lt;/excludes&gt; &lt;/configuration&gt; &lt;/plugin&gt; &lt;plugin&gt; &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt; &lt;artifactId&gt;maven-resources-plugin&lt;/artifactId&gt; &lt;version&gt;3." />
@@ -15,7 +17,7 @@
 <link rel="icon" href="/Maven/favicon.png" type="image/x-icon">
 
 
-<link rel="stylesheet" href="/Maven/book.min.5ffea21f70a71b9e6059006c33cc74cf184e208cb9897c6b24840c9f4e0e385e.css" integrity="sha256-X/6iH3CnG55gWQBsM8x0zxhOIIy5iXxrJIQMn04OOF4=">
+<link rel="stylesheet" href="/Maven/book.min.d436f463c9471cfab26a8b71cd2f50b6abf5225806391453da4ca111d1834fef.css" integrity="sha256-1Db0Y8lHHPqyaotxzS9Qtqv1IlgGORRT2kyhEdGDT&#43;8=">
 
 
 <!--
@@ -36,6 +38,12 @@ https://github.com/alex-shpak/hugo-book
   <a href="/Maven"><span>Maven</span>
   </a>
 </h2>
+
+
+
+
+
+
 
 
 
@@ -72,6 +80,11 @@ https://github.com/alex-shpak/hugo-book
 </ul>
 </li>
 </ul>
+
+
+
+
+
 
 
 
@@ -122,7 +135,8 @@ https://github.com/alex-shpak/hugo-book
       </header>
 
       
-<article class="markdown"><h1 id="可运行-jar">可运行 jar</h1>
+      
+  <article class="markdown"><h1 id="可运行-jar">可运行 jar</h1>
 <h2 id="方式一">方式一</h2>
 <p><strong>目录结构</strong></p>
 <ul>
@@ -225,6 +239,7 @@ https://github.com/alex-shpak/hugo-book
 </ul>
 </article>
  
+      
 
       <footer class="book-footer">
         
@@ -253,14 +268,29 @@ https://github.com/alex-shpak/hugo-book
 
  
         
+<script>
+var images = document.getElementsByTagName("img")
+console.info(images.length)
+for(var i=0; i<images.length; i++){
+  var image = images[i]
+  var src = image.getAttribute("src");
+  if(src.startsWith("-images")){
+    image.setAttribute("src", "../" + src)
+  }
+}
+</script>
+
+      </footer>
+
+      
   
   <div class="book-comments">
 
 </div>
   
  
-      </footer>
-      
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
     </div>
 
     

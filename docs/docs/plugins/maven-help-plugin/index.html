@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Maven Help Plugin"><meta property="og:title" content="" />
+<meta name="description" content="maven-help-plugin Maven Help插件 可以用来查看构建目标的帮助文档。
+help:help $ mvn help:help The Maven Help plugin provides goals aimed at helping to make sense out of the build environment. It includes the ability to view the effective POM and settings files, after inheritance and active profiles have been applied, as well as a describe a particular plugin goal to give usage information. This plugin has 9 goals: help:active-profiles Displays a list of the profiles which are currently active for this build."><meta property="og:title" content="" />
 <meta property="og:description" content="maven-help-plugin Maven Help插件 可以用来查看构建目标的帮助文档。
 help:help $ mvn help:help The Maven Help plugin provides goals aimed at helping to make sense out of the build environment. It includes the ability to view the effective POM and settings files, after inheritance and active profiles have been applied, as well as a describe a particular plugin goal to give usage information. This plugin has 9 goals: help:active-profiles Displays a list of the profiles which are currently active for this build." />
 <meta property="og:type" content="article" />
@@ -14,7 +15,7 @@ help:help $ mvn help:help The Maven Help plugin provides goals aimed at helping 
 <link rel="icon" href="/Maven/favicon.png" type="image/x-icon">
 
 
-<link rel="stylesheet" href="/Maven/book.min.5ffea21f70a71b9e6059006c33cc74cf184e208cb9897c6b24840c9f4e0e385e.css" integrity="sha256-X/6iH3CnG55gWQBsM8x0zxhOIIy5iXxrJIQMn04OOF4=">
+<link rel="stylesheet" href="/Maven/book.min.d436f463c9471cfab26a8b71cd2f50b6abf5225806391453da4ca111d1834fef.css" integrity="sha256-1Db0Y8lHHPqyaotxzS9Qtqv1IlgGORRT2kyhEdGDT&#43;8=">
 
 
 <!--
@@ -35,6 +36,12 @@ https://github.com/alex-shpak/hugo-book
   <a href="/Maven"><span>Maven</span>
   </a>
 </h2>
+
+
+
+
+
+
 
 
 
@@ -71,6 +78,11 @@ https://github.com/alex-shpak/hugo-book
 </ul>
 </li>
 </ul>
+
+
+
+
+
 
 
 
@@ -134,7 +146,8 @@ https://github.com/alex-shpak/hugo-book
       </header>
 
       
-<article class="markdown"><h1 id="maven-help-plugin">maven-help-plugin</h1>
+      
+  <article class="markdown"><h1 id="maven-help-plugin">maven-help-plugin</h1>
 <p>Maven Help插件 可以用来查看构建目标的帮助文档。</p>
 <h2 id="helphelp">help:help</h2>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">$ mvn help:help
@@ -213,6 +226,7 @@ mvn help:describe -Dplugin=org.apache.maven.plugins:maven-dependency-plugin:3.0.
 <p>显示系统属性和环境变量等平台详细信息列表。</p>
 </article>
  
+      
 
       <footer class="book-footer">
         
@@ -241,14 +255,29 @@ mvn help:describe -Dplugin=org.apache.maven.plugins:maven-dependency-plugin:3.0.
 
  
         
+<script>
+var images = document.getElementsByTagName("img")
+console.info(images.length)
+for(var i=0; i<images.length; i++){
+  var image = images[i]
+  var src = image.getAttribute("src");
+  if(src.startsWith("-images")){
+    image.setAttribute("src", "../" + src)
+  }
+}
+</script>
+
+      </footer>
+
+      
   
   <div class="book-comments">
 
 </div>
   
  
-      </footer>
-      
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
     </div>
 
     

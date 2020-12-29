@@ -4,7 +4,11 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Parent vs Import"><meta property="og:title" content="" />
+<meta name="description" content="parent 和 import 的区别 parent 示例
+&lt;!-- Inherit defaults from Spring Boot --&gt; &lt;parent&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt; &lt;version&gt;1.5.21.RELEASE&lt;/version&gt; &lt;/parent&gt;  13.2.1 Inheriting the starter parent
+ import 示例
+&lt;dependencyManagement&gt; &lt;dependencies&gt; &lt;dependency&gt; &lt;!-- Import dependency management from Spring Boot --&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-dependencies&lt;/artifactId&gt; &lt;version&gt;1.5.21.RELEASE&lt;/version&gt; &lt;type&gt;pom&lt;/type&gt; &lt;scope&gt;import&lt;/scope&gt; &lt;/dependency&gt; &lt;/dependencies&gt; &lt;/dependencyManagement&gt;  13.2.2 Using Spring Boot without the parent POM
+ 区别  相同点  实现复用 统一管理依赖的版本   parent  优点  定义默认依赖 定义默认行为   缺点  单继承     import  优点  多继承   缺点  只作用于 dependencyMannagement，导入 dependencyMannagement 不允许属性覆盖      Read More  Introduction to the Dependency Mechanism 《Maven官方文档》-Maven依赖机制简介  "><meta property="og:title" content="" />
 <meta property="og:description" content="parent 和 import 的区别 parent 示例
 &lt;!-- Inherit defaults from Spring Boot --&gt; &lt;parent&gt; &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt; &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt; &lt;version&gt;1.5.21.RELEASE&lt;/version&gt; &lt;/parent&gt;  13.2.1 Inheriting the starter parent
  import 示例
@@ -17,7 +21,7 @@
 <link rel="icon" href="/Maven/favicon.png" type="image/x-icon">
 
 
-<link rel="stylesheet" href="/Maven/book.min.5ffea21f70a71b9e6059006c33cc74cf184e208cb9897c6b24840c9f4e0e385e.css" integrity="sha256-X/6iH3CnG55gWQBsM8x0zxhOIIy5iXxrJIQMn04OOF4=">
+<link rel="stylesheet" href="/Maven/book.min.d436f463c9471cfab26a8b71cd2f50b6abf5225806391453da4ca111d1834fef.css" integrity="sha256-1Db0Y8lHHPqyaotxzS9Qtqv1IlgGORRT2kyhEdGDT&#43;8=">
 
 
 <!--
@@ -38,6 +42,12 @@ https://github.com/alex-shpak/hugo-book
   <a href="/Maven"><span>Maven</span>
   </a>
 </h2>
+
+
+
+
+
+
 
 
 
@@ -74,6 +84,11 @@ https://github.com/alex-shpak/hugo-book
 </ul>
 </li>
 </ul>
+
+
+
+
+
 
 
 
@@ -126,7 +141,8 @@ https://github.com/alex-shpak/hugo-book
       </header>
 
       
-<article class="markdown"><h1 id="parent-和-import-的区别">parent 和 import 的区别</h1>
+      
+  <article class="markdown"><h1 id="parent-和-import-的区别">parent 和 import 的区别</h1>
 <h2 id="parent">parent</h2>
 <p>示例</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#75715e">&lt;!-- Inherit defaults from Spring Boot --&gt;</span>
@@ -197,10 +213,11 @@ https://github.com/alex-shpak/hugo-book
 <h2 id="read-more">Read More</h2>
 <ul>
 <li><a href="http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html">Introduction to the Dependency Mechanism</a></li>
-<li><a href="%5Bhttp://ifeve.com/maven-dependency-mechanism/%5D(http://ifeve.com/maven-dependency-mechanism/)">《Maven官方文档》-Maven依赖机制简介</a></li>
+<li><a href="[http://ifeve.com/maven-dependency-mechanism/]%28http://ifeve.com/maven-dependency-mechanism/%29">《Maven官方文档》-Maven依赖机制简介</a></li>
 </ul>
 </article>
  
+      
 
       <footer class="book-footer">
         
@@ -229,14 +246,29 @@ https://github.com/alex-shpak/hugo-book
 
  
         
+<script>
+var images = document.getElementsByTagName("img")
+console.info(images.length)
+for(var i=0; i<images.length; i++){
+  var image = images[i]
+  var src = image.getAttribute("src");
+  if(src.startsWith("-images")){
+    image.setAttribute("src", "../" + src)
+  }
+}
+</script>
+
+      </footer>
+
+      
   
   <div class="book-comments">
 
 </div>
   
  
-      </footer>
-      
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
     </div>
 
     

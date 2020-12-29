@@ -4,7 +4,15 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Custom Plugin"><meta property="og:title" content="" />
+<meta name="description" content="编写 maven 插件 本文主要通过编写一个插件来加深对maven插件机制 生命周期 插件目标 插件解析机制 等概念的理解，插件本身并没有实际功能，只是输出一句 Hello World。
+注意事项 和 概述   maven 插件的命名 &lt;name&gt;-maven-plugin
+  maven插件项目与一般maven项目，除了&lt;packaging&gt;&lt;/packaging&gt; 是 maven-plugin 以外，没有什么不同（&lt;packaging&gt;maven-plugin&lt;/packaging&gt;）
+  maven插件项目的依赖
+&lt;dependency&gt; &lt;groupId&gt;org.apache.maven&lt;/groupId&gt; &lt;artifactId&gt;maven-plugin-api&lt;/artifactId&gt; &lt;version&gt;3.3.3&lt;/version&gt; &lt;/dependency&gt;   编写maven插件可以使用两种风格的标注，直接写在注释中(javadoc)，或者使用JDK1.5&#43;的注解的形式，如果使用注解的形式，需要使用依赖
+&lt;dependency&gt; &lt;groupId&gt;org.apache.maven.plugin-tools&lt;/groupId&gt; &lt;artifactId&gt;maven-plugin-annotations&lt;/artifactId&gt; &lt;version&gt;3.5&lt;/version&gt; &lt;/dependency&gt; 以下两种声明目标的方式(@goal print和@Mojo(name = &quot;print&quot;))是一样的， 因为使用的时候是通过jar包中的plugin-help.xml文件 (&lt;name&gt;-maven-plugin-&lt;version&gt;.jar\META-INF\maven\&lt;groupId&gt;\&lt;name&gt;-maven-plugin\plugin-help.xml) 来识别目标、参数等相关信息的。
+如下展示了，声明 print 目标的两种方式。
+@Mojo(name = &#34;print&#34;) public class HelloMojo extends AbstractMojo { public void execute() throws MojoExecutionException, MojoFailureException {} } 和
+/** * @goal print */ public class HelloMojo extends AbstractMojo { public void execute() throws MojoExecutionException, MojoFailureException{} }   编写具体插件的时候需继承 AbstractMojo 类，实现其中的 execute 方法，MOJO即 Maven Ordinary Java Object [ 参见 POJO（Plain Ordinary Java Object）]"><meta property="og:title" content="" />
 <meta property="og:description" content="编写 maven 插件 本文主要通过编写一个插件来加深对maven插件机制 生命周期 插件目标 插件解析机制 等概念的理解，插件本身并没有实际功能，只是输出一句 Hello World。
 注意事项 和 概述   maven 插件的命名 &lt;name&gt;-maven-plugin
   maven插件项目与一般maven项目，除了&lt;packaging&gt;&lt;/packaging&gt; 是 maven-plugin 以外，没有什么不同（&lt;packaging&gt;maven-plugin&lt;/packaging&gt;）
@@ -21,7 +29,7 @@
 <link rel="icon" href="/Maven/favicon.png" type="image/x-icon">
 
 
-<link rel="stylesheet" href="/Maven/book.min.5ffea21f70a71b9e6059006c33cc74cf184e208cb9897c6b24840c9f4e0e385e.css" integrity="sha256-X/6iH3CnG55gWQBsM8x0zxhOIIy5iXxrJIQMn04OOF4=">
+<link rel="stylesheet" href="/Maven/book.min.d436f463c9471cfab26a8b71cd2f50b6abf5225806391453da4ca111d1834fef.css" integrity="sha256-1Db0Y8lHHPqyaotxzS9Qtqv1IlgGORRT2kyhEdGDT&#43;8=">
 
 
 <!--
@@ -42,6 +50,12 @@ https://github.com/alex-shpak/hugo-book
   <a href="/Maven"><span>Maven</span>
   </a>
 </h2>
+
+
+
+
+
+
 
 
 
@@ -78,6 +92,11 @@ https://github.com/alex-shpak/hugo-book
 </ul>
 </li>
 </ul>
+
+
+
+
+
 
 
 
@@ -137,7 +156,8 @@ https://github.com/alex-shpak/hugo-book
       </header>
 
       
-<article class="markdown"><h1 id="编写-maven-插件">编写 maven 插件</h1>
+      
+  <article class="markdown"><h1 id="编写-maven-插件">编写 maven 插件</h1>
 <p>本文主要通过编写一个插件来加深对<code>maven插件机制</code> <code>生命周期</code> <code>插件目标</code> <code>插件解析机制</code> 等概念的理解，插件本身并没有实际功能，只是输出一句 <code>Hello World</code>。</p>
 <h3 id="注意事项-和-概述">注意事项 和 概述</h3>
 <ol>
@@ -426,6 +446,7 @@ mvn help:describe -Dplugin<span style="color:#f92672">=</span>hello -Ddetail
 </blockquote>
 </article>
  
+      
 
       <footer class="book-footer">
         
@@ -454,14 +475,29 @@ mvn help:describe -Dplugin<span style="color:#f92672">=</span>hello -Ddetail
 
  
         
+<script>
+var images = document.getElementsByTagName("img")
+console.info(images.length)
+for(var i=0; i<images.length; i++){
+  var image = images[i]
+  var src = image.getAttribute("src");
+  if(src.startsWith("-images")){
+    image.setAttribute("src", "../" + src)
+  }
+}
+</script>
+
+      </footer>
+
+      
   
   <div class="book-comments">
 
 </div>
   
  
-      </footer>
-      
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
     </div>
 
     

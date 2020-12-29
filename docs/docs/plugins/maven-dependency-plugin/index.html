@@ -4,7 +4,11 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Maven Dependency Plugin"><meta property="og:title" content="" />
+<meta name="description" content="maven-dependency-plugin 将依赖的jar包拷贝到 lib 目录下面 &lt;plugin&gt; &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt; &lt;artifactId&gt;maven-dependency-plugin&lt;/artifactId&gt; &lt;executions&gt; &lt;execution&gt; &lt;id&gt;copy&lt;/id&gt; &lt;phase&gt;package&lt;/phase&gt; &lt;goals&gt; &lt;goal&gt;copy-dependencies&lt;/goal&gt; &lt;/goals&gt; &lt;configuration&gt; &lt;outputDirectory&gt; &lt;!--拷贝到构建目录的lib文件夹下 --&gt; ${project.build.directory}/lib &lt;/outputDirectory&gt; &lt;/configuration&gt; &lt;/execution&gt; &lt;/executions&gt; &lt;/plugin&gt; 查看树形依赖 mvn dependency:tree 查看依赖列表 mvn dependency:list 其他   dependency:copy 用来拷贝某一个或多个特定文件到指定目录；
+  dependency:copy-dependencies 用来拷贝依赖的文件到指定目录；
+  dependency:unpack 与 copy 类似，但会解压文件；
+  dependency:unpack-dependencies 与 copy-dependencies 类似，但会解压文件；
+  Read More  Apache Maven Dependency Plugin 查看maven项目的依赖关系 mvn dependency:tree  "><meta property="og:title" content="" />
 <meta property="og:description" content="maven-dependency-plugin 将依赖的jar包拷贝到 lib 目录下面 &lt;plugin&gt; &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt; &lt;artifactId&gt;maven-dependency-plugin&lt;/artifactId&gt; &lt;executions&gt; &lt;execution&gt; &lt;id&gt;copy&lt;/id&gt; &lt;phase&gt;package&lt;/phase&gt; &lt;goals&gt; &lt;goal&gt;copy-dependencies&lt;/goal&gt; &lt;/goals&gt; &lt;configuration&gt; &lt;outputDirectory&gt; &lt;!--拷贝到构建目录的lib文件夹下 --&gt; ${project.build.directory}/lib &lt;/outputDirectory&gt; &lt;/configuration&gt; &lt;/execution&gt; &lt;/executions&gt; &lt;/plugin&gt; 查看树形依赖 mvn dependency:tree 查看依赖列表 mvn dependency:list 其他   dependency:copy 用来拷贝某一个或多个特定文件到指定目录；
   dependency:copy-dependencies 用来拷贝依赖的文件到指定目录；
   dependency:unpack 与 copy 类似，但会解压文件；
@@ -17,7 +21,7 @@
 <link rel="icon" href="/Maven/favicon.png" type="image/x-icon">
 
 
-<link rel="stylesheet" href="/Maven/book.min.5ffea21f70a71b9e6059006c33cc74cf184e208cb9897c6b24840c9f4e0e385e.css" integrity="sha256-X/6iH3CnG55gWQBsM8x0zxhOIIy5iXxrJIQMn04OOF4=">
+<link rel="stylesheet" href="/Maven/book.min.d436f463c9471cfab26a8b71cd2f50b6abf5225806391453da4ca111d1834fef.css" integrity="sha256-1Db0Y8lHHPqyaotxzS9Qtqv1IlgGORRT2kyhEdGDT&#43;8=">
 
 
 <!--
@@ -38,6 +42,12 @@ https://github.com/alex-shpak/hugo-book
   <a href="/Maven"><span>Maven</span>
   </a>
 </h2>
+
+
+
+
+
+
 
 
 
@@ -74,6 +84,11 @@ https://github.com/alex-shpak/hugo-book
 </ul>
 </li>
 </ul>
+
+
+
+
+
 
 
 
@@ -127,7 +142,8 @@ https://github.com/alex-shpak/hugo-book
       </header>
 
       
-<article class="markdown"><h1 id="maven-dependency-plugin">maven-dependency-plugin</h1>
+      
+  <article class="markdown"><h1 id="maven-dependency-plugin">maven-dependency-plugin</h1>
 <h2 id="将依赖的jar包拷贝到-lib-目录下面">将依赖的jar包拷贝到 lib 目录下面</h2>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#f92672">&lt;plugin&gt;</span>
   <span style="color:#f92672">&lt;groupId&gt;</span>org.apache.maven.plugins<span style="color:#f92672">&lt;/groupId&gt;</span>
@@ -174,6 +190,7 @@ https://github.com/alex-shpak/hugo-book
 </ul>
 </article>
  
+      
 
       <footer class="book-footer">
         
@@ -202,14 +219,29 @@ https://github.com/alex-shpak/hugo-book
 
  
         
+<script>
+var images = document.getElementsByTagName("img")
+console.info(images.length)
+for(var i=0; i<images.length; i++){
+  var image = images[i]
+  var src = image.getAttribute("src");
+  if(src.startsWith("-images")){
+    image.setAttribute("src", "../" + src)
+  }
+}
+</script>
+
+      </footer>
+
+      
   
   <div class="book-comments">
 
 </div>
   
  
-      </footer>
-      
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
     </div>
 
     

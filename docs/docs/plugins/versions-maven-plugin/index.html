@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Versions Maven Plugin"><meta property="og:title" content="" />
+<meta name="description" content="Versions Maven Plugin 当 Maven 下面的子模块比较多的时候，每次修改工程的版本号都是一件非常的痛苦的事情，因为子模块都引用了顶级父模块的pom，所以虽然在父模块中定义了工程的版本号，但每个子模块中要显示地指定父模块的版本号，否则无法找到父模块的pom。
+versions-maven-plugin 插件是一个可以自动修改项目版本号的工具，避免每次版本升级 都需要修改所有子模块的 parent 版本号。
+快速开始 # 也可以使用全名称 # mvn org.codehaus.mojo:versions-maven-plugin:set -DnewVersion=5.0.0-SNAPSHOT $ mvn versions:set -DnewVersion=5.0.0-SNAPSHOT # 执行成功后，所有子模块的 parent 版本已经修改，对原来的 pom 文件进行了备份 $ git status #&gt; Changes not staged for commit: #&gt; modified: example-client-simple/pom.xml #&gt; modified: example-client/pom.xml #&gt; modified: example-core/pom.xml #&gt; modified: example-server/pom.xml #&gt; modified: pom.xml #&gt; #&gt; Untracked files: #&gt; example-client-simple/pom.xml.versionsBackup #&gt; example-client/pom.xml.versionsBackup #&gt; example-core/pom.xml.versionsBackup #&gt; example-server/pom.xml.versionsBackup #&gt; pom.xml.versionsBackup # 如果想要还原，可以执行 $ mvn versions:revert # 如果确认要使用新版本，可以提交本次版本变更，这时会删除 ."><meta property="og:title" content="" />
 <meta property="og:description" content="Versions Maven Plugin 当 Maven 下面的子模块比较多的时候，每次修改工程的版本号都是一件非常的痛苦的事情，因为子模块都引用了顶级父模块的pom，所以虽然在父模块中定义了工程的版本号，但每个子模块中要显示地指定父模块的版本号，否则无法找到父模块的pom。
 versions-maven-plugin 插件是一个可以自动修改项目版本号的工具，避免每次版本升级 都需要修改所有子模块的 parent 版本号。
 快速开始 # 也可以使用全名称 # mvn org.codehaus.mojo:versions-maven-plugin:set -DnewVersion=5.0.0-SNAPSHOT $ mvn versions:set -DnewVersion=5.0.0-SNAPSHOT # 执行成功后，所有子模块的 parent 版本已经修改，对原来的 pom 文件进行了备份 $ git status #&gt; Changes not staged for commit: #&gt; modified: example-client-simple/pom.xml #&gt; modified: example-client/pom.xml #&gt; modified: example-core/pom.xml #&gt; modified: example-server/pom.xml #&gt; modified: pom.xml #&gt; #&gt; Untracked files: #&gt; example-client-simple/pom.xml.versionsBackup #&gt; example-client/pom.xml.versionsBackup #&gt; example-core/pom.xml.versionsBackup #&gt; example-server/pom.xml.versionsBackup #&gt; pom.xml.versionsBackup # 如果想要还原，可以执行 $ mvn versions:revert # 如果确认要使用新版本，可以提交本次版本变更，这时会删除 ." />
@@ -15,7 +17,7 @@ versions-maven-plugin 插件是一个可以自动修改项目版本号的工具�
 <link rel="icon" href="/Maven/favicon.png" type="image/x-icon">
 
 
-<link rel="stylesheet" href="/Maven/book.min.5ffea21f70a71b9e6059006c33cc74cf184e208cb9897c6b24840c9f4e0e385e.css" integrity="sha256-X/6iH3CnG55gWQBsM8x0zxhOIIy5iXxrJIQMn04OOF4=">
+<link rel="stylesheet" href="/Maven/book.min.d436f463c9471cfab26a8b71cd2f50b6abf5225806391453da4ca111d1834fef.css" integrity="sha256-1Db0Y8lHHPqyaotxzS9Qtqv1IlgGORRT2kyhEdGDT&#43;8=">
 
 
 <!--
@@ -36,6 +38,12 @@ https://github.com/alex-shpak/hugo-book
   <a href="/Maven"><span>Maven</span>
   </a>
 </h2>
+
+
+
+
+
+
 
 
 
@@ -72,6 +80,11 @@ https://github.com/alex-shpak/hugo-book
 </ul>
 </li>
 </ul>
+
+
+
+
+
 
 
 
@@ -125,7 +138,8 @@ https://github.com/alex-shpak/hugo-book
       </header>
 
       
-<article class="markdown"><h1 id="versions-maven-plugin">Versions Maven Plugin</h1>
+      
+  <article class="markdown"><h1 id="versions-maven-plugin">Versions Maven Plugin</h1>
 <p>当 Maven 下面的子模块比较多的时候，每次修改工程的版本号都是一件非常的痛苦的事情，因为子模块都引用了顶级父模块的pom，所以虽然在父模块中定义了工程的版本号，但每个子模块中要显示地指定父模块的版本号，否则无法找到父模块的pom。</p>
 <p><code>versions-maven-plugin</code> 插件是一个可以自动修改项目版本号的工具，避免每次版本升级 都需要修改所有子模块的 parent 版本号。</p>
 <h2 id="快速开始">快速开始</h2>
@@ -359,6 +373,7 @@ $ mvn help:describe -Dplugin<span style="color:#f92672">=</span>versions -Ddetai
 </blockquote>
 </article>
  
+      
 
       <footer class="book-footer">
         
@@ -387,14 +402,29 @@ $ mvn help:describe -Dplugin<span style="color:#f92672">=</span>versions -Ddetai
 
  
         
+<script>
+var images = document.getElementsByTagName("img")
+console.info(images.length)
+for(var i=0; i<images.length; i++){
+  var image = images[i]
+  var src = image.getAttribute("src");
+  if(src.startsWith("-images")){
+    image.setAttribute("src", "../" + src)
+  }
+}
+</script>
+
+      </footer>
+
+      
   
   <div class="book-comments">
 
 </div>
   
  
-      </footer>
-      
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
     </div>
 
     

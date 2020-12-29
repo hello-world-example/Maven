@@ -4,7 +4,11 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Troubleshooting"><meta property="og:title" content="" />
+<meta name="description" content="常见故障排查 确认环境 首先确认 Maven 安装是否正常，很多问题跟自身环境有关。
+确认 mvn 命令是否可正常使用，可通过 mvn -v 确认，输出信息可以看出
+ 版本 安装路径 JDK 版本 和 位置 &hellip;  ~ ᐅ mvn -v Apache Maven 3.3.9 (bb52d8502b132ec0a5a3f4c09453c07478323dc5; 2015-11-11T00:41:47&#43;08:00) Maven home: /Users/kail/java/apache-maven-3.3.9 Java version: 1.8.0_151, vendor: Oracle Corporation Java home: /Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/jre ... 如果 mvn 命令不正常，请先确保 Maven 安装正常，Maven 的安装很简单，只需两步
+ 从 http://maven.apache.org/download.cgi 下载任意格式压缩包（不带 src 的），解压到任意目录 配置 JAVA_HOME 和 M2_HOME 环境变量即可，配置的值详见 上面 mvn -v 的输出  注意：一般对于开发人员来说，建议都保持默认配置即可，无需再进行额外的配置，如：
+ 无需 设置本地仓库位置到非系统盘，现在已经不是资源紧张的年代，几个 G 的空间还是有的，为这点空间浪费时间不值得 无需 把 settings."><meta property="og:title" content="" />
 <meta property="og:description" content="常见故障排查 确认环境 首先确认 Maven 安装是否正常，很多问题跟自身环境有关。
 确认 mvn 命令是否可正常使用，可通过 mvn -v 确认，输出信息可以看出
  版本 安装路径 JDK 版本 和 位置 &hellip;  ~ ᐅ mvn -v Apache Maven 3.3.9 (bb52d8502b132ec0a5a3f4c09453c07478323dc5; 2015-11-11T00:41:47&#43;08:00) Maven home: /Users/kail/java/apache-maven-3.3.9 Java version: 1.8.0_151, vendor: Oracle Corporation Java home: /Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/jre ... 如果 mvn 命令不正常，请先确保 Maven 安装正常，Maven 的安装很简单，只需两步
@@ -12,12 +16,12 @@
  无需 设置本地仓库位置到非系统盘，现在已经不是资源紧张的年代，几个 G 的空间还是有的，为这点空间浪费时间不值得 无需 把 settings." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://hello-world-example.github.io/Maven/docs/Action/Troubleshooting/" />
-
+<meta property="article:modified_time" content="2020-03-14T23:52:42+08:00" />
 <title>Troubleshooting | Maven</title>
 <link rel="icon" href="/Maven/favicon.png" type="image/x-icon">
 
 
-<link rel="stylesheet" href="/Maven/book.min.5ffea21f70a71b9e6059006c33cc74cf184e208cb9897c6b24840c9f4e0e385e.css" integrity="sha256-X/6iH3CnG55gWQBsM8x0zxhOIIy5iXxrJIQMn04OOF4=">
+<link rel="stylesheet" href="/Maven/book.min.d436f463c9471cfab26a8b71cd2f50b6abf5225806391453da4ca111d1834fef.css" integrity="sha256-1Db0Y8lHHPqyaotxzS9Qtqv1IlgGORRT2kyhEdGDT&#43;8=">
 
 
 <!--
@@ -38,6 +42,12 @@ https://github.com/alex-shpak/hugo-book
   <a href="/Maven"><span>Maven</span>
   </a>
 </h2>
+
+
+
+
+
+
 
 
 
@@ -74,6 +84,11 @@ https://github.com/alex-shpak/hugo-book
 </ul>
 </li>
 </ul>
+
+
+
+
+
 
 
 
@@ -137,7 +152,8 @@ https://github.com/alex-shpak/hugo-book
       </header>
 
       
-<article class="markdown"><h1 id="常见故障排查">常见故障排查</h1>
+      
+  <article class="markdown"><h1 id="常见故障排查">常见故障排查</h1>
 <h2 id="确认环境">确认环境</h2>
 <p>首先确认 Maven 安装是否正常，很多问题跟自身环境有关。</p>
 <p>确认 <code>mvn</code> 命令是否可正常使用，可通过 <code>mvn -v</code> 确认，输出信息可以看出</p>
@@ -260,12 +276,21 @@ Java home: /Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/jre
 </ul>
 </article>
  
+      
 
       <footer class="book-footer">
         
   <div class="flex justify-between">
 
 
+
+  <div>
+    
+    <a class="flex align-center" href="https://github.com/hello-world-example/Maven/commit/4e9311b1205fed9dba31c0ace647a9871075967e" title='Last modified by 杨凯彬 | Mar 14, 2020' target="_blank" rel="noopener">
+      <img src="/Maven/svg/calendar.svg" class="book-icon" alt="Calendar" />
+      <span>Mar 14, 2020</span>
+    </a>
+  </div>
 
 
 
@@ -280,14 +305,29 @@ Java home: /Library/Java/JavaVirtualMachines/jdk1.8.0_151.jdk/Contents/Home/jre
 
  
         
+<script>
+var images = document.getElementsByTagName("img")
+console.info(images.length)
+for(var i=0; i<images.length; i++){
+  var image = images[i]
+  var src = image.getAttribute("src");
+  if(src.startsWith("-images")){
+    image.setAttribute("src", "../" + src)
+  }
+}
+</script>
+
+      </footer>
+
+      
   
   <div class="book-comments">
 
 </div>
   
  
-      </footer>
-      
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
     </div>
 
     
